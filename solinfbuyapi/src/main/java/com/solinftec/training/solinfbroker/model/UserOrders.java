@@ -8,6 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Entity
 @Table(name = "user_orders")
 public class UserOrders {
@@ -23,7 +26,9 @@ public class UserOrders {
     private Double price;
     private Integer type;
     private Integer status;
+    @CreationTimestamp
     private Date created_on;
+    @UpdateTimestamp
     private Date updated_on;
     
     public Long getId() {

@@ -7,6 +7,9 @@ import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 @Entity
 @IdClass(UserStockBalancesPKId.class)
 @Table(name ="user_stock_balances")
@@ -18,7 +21,9 @@ public class UserStockBalances {
     private String stock_symbol;
     private String stock_name;
     private int volume;
+    @CreationTimestamp
     private Date created_on;
+    @UpdateTimestamp
     private Date updated_on;
 
     public int getId_user() {

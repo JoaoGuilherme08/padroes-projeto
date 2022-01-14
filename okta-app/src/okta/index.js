@@ -2,7 +2,7 @@ import OktaSignIn from "@okta/okta-signin-widget";
 import { OktaAuth } from "@okta/okta-auth-js";
 
 const yourOktaUri = "https://dev-7951177.okta.com";
-const clientId = "0oa3jvzl1xRrsc41t5d7";
+const clientId = "0oa3l6dgvbrgZhoqW5d7";
 
 const oktaSignIn = new OktaSignIn({
   baseUrl: yourOktaUri,

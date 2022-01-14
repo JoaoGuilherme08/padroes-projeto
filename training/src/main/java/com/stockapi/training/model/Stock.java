@@ -13,7 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name = "stocks")
-public class Stock {
+public class Stock{
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

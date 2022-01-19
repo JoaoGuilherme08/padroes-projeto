@@ -91,7 +91,7 @@ public class UserOrderService implements IUserOrderService {
 
         //endregion
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userOrders);
+        return ResponseEntity.ok().body(userOrders);
     }
     
 
@@ -149,7 +149,7 @@ public class UserOrderService implements IUserOrderService {
                 }
             }
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(order_recebida);
+        return ResponseEntity.ok().body(order_recebida);
     }
 
 
@@ -157,6 +157,19 @@ public class UserOrderService implements IUserOrderService {
     public List listaOrdens(int id, long type, long idStock) {
 
         return userOrderRepository.findByTypeAndStockNotId(id, type, idStock);
+    }
+
+
+    @Override
+    public List<UserOrders> findbyUserIdAndType(int idUser, int type) {
+
+        return userOrderRepository.findByUserIdAndType(idUser,type);
+    }
+
+
+    @Override
+    public List<UserOrders> findByUserId(int idUser) {
+        return userOrderRepository.findByUser(idUser);
     }
 
 }

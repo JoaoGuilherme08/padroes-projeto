@@ -38,11 +38,10 @@ public class StockController {
        
         return stockRepository.findById(id)
          .map(stock -> {
-             System.out.print(newStock.getAsk_max());
-            stock.setAsk_max(newStock.getAsk_max());
-            stock.setAsk_min(newStock.getAsk_min());
-            stock.setBid_max(newStock.getBid_max());
-            stock.setBid_min(newStock.getBid_min());
+            stock.setAsk_max(newStock.getAsk_max() != 0 ? newStock.getAsk_max() : stock.getAsk_max());
+            stock.setAsk_min(newStock.getAsk_min() != 0 ? newStock.getAsk_min() : stock.getAsk_min());
+            stock.setBid_max(newStock.getBid_max() != 0 ? newStock.getBid_max() : stock.getBid_max());
+            stock.setBid_min(newStock.getBid_min() != 0 ? newStock.getBid_min() : stock.getBid_min());
             stock.setUpdated_on(Date.from(Instant.now()));
             return stockRepository.save(stock);
 

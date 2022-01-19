@@ -2,8 +2,10 @@ package com.solinftec.training.solinfbroker.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.solinftec.training.solinfbroker.repository.UsersRepository;
+import com.solinftec.training.solinfbroker.services.UserService.IUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,25 +15,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
-
 import com.solinftec.training.solinfbroker.model.Users;
 
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
     
+    IUserService userService;
+    
+    public UsuarioController(UsersRepository usersRepository, IUserService userService) {
+        super();
+        this.usersRepository = usersRepository;
+        this.userService = userService;
+    }
+
     @Autowired
     private UsersRepository usersRepository;
 
-    @GetMapping
-    public List<Users> listar() {
-        return usersRepository.findAll();
+    @GetMapping("/{id}")
+    public Users listar(@PathVariable("id") Long id) {
+        return userService.Listar(id);
     }
 
     @PostMapping
-    public Users adicionar(@RequestBody Users user){
-        return usersRepository.save(user);
+    public ResponseEntity<?>  adicionar(@RequestBody Users user){
+        return userService.save(user);
     }
 
     @PutMapping("/{id}")

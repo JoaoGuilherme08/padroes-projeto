@@ -8,21 +8,12 @@ public class compra implements icompra {
 
     public Double getMinPriceCompra(Double Preco, Long IdStock, UserOrderRepository userOrderRepository){
 
-        if(userOrderRepository.selectMinPriceCompra(IdStock) > Preco && userOrderRepository.selectMinPriceVenda(IdStock) != 0){
-            return Preco;
-        }else{
-            return userOrderRepository.selectMinPriceCompra(IdStock);
-        }
+        return userOrderRepository.selectMinPriceCompra(IdStock);       
     }
 
 
     public Double getMaxPriceCompra(Double Preco, Long IdStock, UserOrderRepository userOrderRepository){
 
-        if(userOrderRepository.selectMaxPriceCompra(IdStock) > Preco && userOrderRepository.selectMinPriceVenda(IdStock) != 0){
-            return Preco;
-        }else{
-            return userOrderRepository.selectMaxPriceCompra(IdStock);
-        }
-    }
-    
+        return userOrderRepository.selectMaxPriceCompra(IdStock);    
+    }    
 }

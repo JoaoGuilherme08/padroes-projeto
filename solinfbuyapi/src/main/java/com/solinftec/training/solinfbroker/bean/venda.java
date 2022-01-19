@@ -9,20 +9,13 @@ public class venda implements ivenda {
 
     public Double getMinPriceVenda(Double Preco, Long IdStock, UserOrderRepository userOrderRepository){
 
-        if(userOrderRepository.selectMinPriceVenda(IdStock) > Preco && userOrderRepository.selectMinPriceVenda(IdStock) != 0){
-            return Preco;
-        }else{
-            return userOrderRepository.selectMinPriceVenda(IdStock);
-        }
+        return userOrderRepository.selectMinPriceVenda(IdStock);
+
     }
 
 
     public Double getMaxPriceVenda(Double Preco, Long IdStock, UserOrderRepository userOrderRepository){
 
-        if(userOrderRepository.selectMaxPriceVenda(IdStock) > Preco && userOrderRepository.selectMinPriceVenda(IdStock) != 0){
-            return Preco;
-        }else{
-            return userOrderRepository.selectMaxPriceVenda(IdStock);
-        }
+        return userOrderRepository.selectMaxPriceVenda(IdStock);        
     }
 }

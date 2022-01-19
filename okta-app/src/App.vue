@@ -1,24 +1,338 @@
 <template>
-  <div id="app2">
-    <nav>
-      <div>
-        <router-link to="/"> Home </router-link>
-        <router-link to="/login" v-if="!authenticated"> Login </router-link>
-        <router-link to="/profile" v-if="authenticated"> Profile </router-link>
-        <a v-if="authenticated" v-on:click="logout()"> Logout </a>
+  <v-app>
+    <nav class="bg-white shadow">
+      <div class="mx-auto container px-6 py-2 xl:py-0">
+        <div class="flex items-center justify-between">
+          <div class="inset-y-0 left-0 flex items-center xl:hidden">
+            <div
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-100 focus:outline-none transition duration-150 ease-in-out"
+            >
+              <div class="visible xl:hidden">
+                <ul
+                  class="p-2 border-r bg-white absolute rounded left-0 right-0 shadow mt-8 md:mt-8 hidden"
+                >
+                  <li
+                    class="flex xl:hidden cursor-pointer text-gray-600 text-sm leading-3 tracking-normal mt-2 py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none"
+                  >
+                    <a
+                      href="/"
+                      class="flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+                    >
+                      <span class="mr-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="icon icon-tabler icon-tabler-grid"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          fill="none"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z"></path>
+                          <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+                          <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+                          <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+                          <rect
+                            x="14"
+                            y="14"
+                            width="6"
+                            height="6"
+                            rx="1"
+                          ></rect>
+                        </svg>
+                      </span>
+                      Home
+                    </a>
+                  </li>
+                  <li
+                    class="xl:hidden flex-col cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 focus:text-indigo-700 focus:outline-none flex justify-center"
+                    @click="dropdownHandler($event)"
+                  >
+                    <a
+                      href="/Profile"
+                      class="flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+                    >
+                      <span class="mr-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#000000"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path
+                            d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                          ></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                      </span>
+                      Profile
+                    </a>
+                  </li>
+                  <li
+                    class="xl:hidden cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 flex items-center focus:text-indigo-700 focus:outline-none"
+                  >
+                    <a
+                      href="javascript: void(0)"
+                      class="flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+                    >
+                      <span class="mr-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="icon icon-tabler icon-tabler-code"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          stroke-width="1.5"
+                          stroke="currentColor"
+                          fill="none"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z"></path>
+                          <polyline points="7 8 3 12 7 16"></polyline>
+                          <polyline points="17 8 21 12 17 16"></polyline>
+                          <line x1="14" y1="4" x2="10" y2="20"></line>
+                        </svg>
+                      </span>
+                      Orders
+                    </a>
+                  </li>
+                  <li
+                    class="xl:hidden cursor-pointer text-gray-600 text-sm leading-3 tracking-normal py-2 hover:text-indigo-700 flex items-center focus:text-indigo-700 focus:outline-none"
+                  >
+                    <a
+                      v-if="authenticated"
+                      v-on:click="logout()"
+                      class="flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+                    >
+                      <span class="mr-2">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="#000000"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <path d="M16 17l5-5-5-5M19.8 12H9M10 3H4v18h6" />
+                        </svg>
+                        <path stroke="none" d="M0 0h24v24H0z"></path>
+                        <polyline
+                          points="8 16 10 10 16 8 14 14 8 16"
+                        ></polyline>
+                        <circle cx="12" cy="12" r="9"></circle>
+                      </span>
+                      Logout
+                    </a>
+                  </li>
+                </ul>
+                <svg
+                  @click="MenuHandler($event, true)"
+                  aria-haspopup="true"
+                  aria-label="Main Menu"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="show-m-menu icon icon-tabler icon-tabler-menu"
+                  width="28"
+                  height="28"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z"></path>
+                  <line x1="4" y1="8" x2="20" y2="8"></line>
+                  <line x1="4" y1="16" x2="20" y2="16"></line>
+                </svg>
+                <div
+                  class="hidden close-m-menu text-gray-700"
+                  @click="MenuHandler($event, false)"
+                >
+                  <svg
+                    aria-label="Close"
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" />
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="flex w-full sm:w-auto items-center sm:items-stretch justify-end sm:justify-start"
+          >
+            <div class="flex items-center">
+              <!-- <svg
+                aria-label="Home"
+                id="logo"
+                enable-background="new 0 0 300 300"
+                height="44"
+                viewBox="0 0 300 300"
+                width="43"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+              >
+                <g>
+                  <path
+                    fill="#4c51bf"
+                    d="m234.735 35.532c-8.822 0-16 7.178-16 16s7.178 16 16 16 16-7.178 16-16-7.178-16-16-16zm0 24c-4.412 0-8-3.588-8-8s3.588-8 8-8 8 3.588 8 8-3.588 8-8 8zm-62.529-14c0-2.502 2.028-4.53 4.53-4.53s4.53 2.028 4.53 4.53c0 2.501-2.028 4.529-4.53 4.529s-4.53-2.027-4.53-4.529zm89.059 60c0 2.501-2.028 4.529-4.53 4.529s-4.53-2.028-4.53-4.529c0-2.502 2.028-4.53 4.53-4.53s4.53 2.029 4.53 4.53zm-40.522-5.459-88-51.064c-1.242-.723-2.773-.723-4.016 0l-88 51.064c-1.232.715-1.992 2.033-1.992 3.459v104c0 1.404.736 2.705 1.938 3.428l88 52.936c.635.381 1.35.572 2.062.572s1.428-.191 2.062-.572l88-52.936c1.201-.723 1.938-2.023 1.938-3.428v-104c0-1.426-.76-2.744-1.992-3.459zm-90.008-42.98 80.085 46.47-52.95 31.289-23.135-13.607v-21.713c0-2.209-1.791-4-4-4s-4 1.791-4 4v21.713l-26.027 15.309c-1.223.719-1.973 2.029-1.973 3.447v29.795l-52 30.727v-94.688zm0 198.707-80.189-48.237 51.467-30.412 24.723 14.539v19.842c0 2.209 1.791 4 4 4s4-1.791 4-4v-19.842l26.027-15.307c1.223-.719 1.973-2.029 1.973-3.447v-31.667l52-30.728v94.729z"
+                  />
+                </g>
+              </svg> -->
+              <img
+                height="44"
+                width="43"
+                src="data:image/png;base64,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"
+                alt=""
+              />
+              <h2
+                class="hidden sm:block text-base text-gray-700 font-bold leading-normal pl-3"
+              >
+                Trade Actions
+              </h2>
+            </div>
+          </div>
+          <div class="flex">
+            <div class="hidden xl:flex md:mr-6 xl:mr-16">
+              <a
+                href="/"
+                class="flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+              >
+                <span class="mr-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-grid"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z"></path>
+                    <rect x="4" y="4" width="6" height="6" rx="1"></rect>
+                    <rect x="14" y="4" width="6" height="6" rx="1"></rect>
+                    <rect x="4" y="14" width="6" height="6" rx="1"></rect>
+                    <rect x="14" y="14" width="6" height="6" rx="1"></rect>
+                  </svg>
+                </span>
+                Home
+              </a>
+              <a
+                href="/Profile"
+                class="flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+              >
+                <span class="mr-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </span>
+                Profile
+              </a>
+              <a
+                href="javascript: void(0)"
+                class="flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+              >
+                <span class="mr-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="icon icon-tabler icon-tabler-code"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z"></path>
+                    <polyline points="7 8 3 12 7 16"></polyline>
+                    <polyline points="17 8 21 12 17 16"></polyline>
+                    <line x1="14" y1="4" x2="10" y2="20"></line>
+                  </svg>
+                </span>
+                Orders
+              </a>
+              <a
+                v-if="authenticated"
+                v-on:click="logout()"
+                class="flex px-5 items-center py-6 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none transition duration-150 ease-in-out"
+              >
+                <span class="mr-2">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M16 17l5-5-5-5M19.8 12H9M10 3H4v18h6" />
+                  </svg>
+                  <path stroke="none" d="M0 0h24v24H0z"></path>
+                  <polyline points="8 16 10 10 16 8 14 14 8 16"></polyline>
+                  <circle cx="12" cy="12" r="9"></circle>
+                </span>
+                Logout
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </nav>
+
     <div id="content">
       <router-view />
     </div>
-  </div>
+  </v-app>
 </template>
 
 <script>
 export default {
   name: "app",
-  data: function () {
-    return { authenticated: false };
+  data() {
+    return {
+      authenticated: false,
+    };
   },
   async created() {
     await this.isAuthenticated();
@@ -35,18 +349,34 @@ export default {
     async logout() {
       await this.$auth.signOut();
     },
+    dropdownHandler(event) {
+      let single = event.currentTarget.getElementsByTagName("ul")[0];
+      single.classList.toggle("hidden");
+    },
+    MenuHandler(el, val) {
+      let MainList =
+        el.currentTarget.parentElement.getElementsByTagName("ul")[0];
+      let closeIcon =
+        el.currentTarget.parentElement.getElementsByClassName(
+          "close-m-menu"
+        )[0];
+      let showIcon =
+        el.currentTarget.parentElement.getElementsByClassName("show-m-menu")[0];
+      if (val) {
+        MainList.classList.remove("hidden");
+        el.currentTarget.classList.add("hidden");
+        closeIcon.classList.remove("hidden");
+      } else {
+        showIcon.classList.remove("hidden");
+        MainList.classList.add("hidden");
+        el.currentTarget.classList.add("hidden");
+      }
+    },
   },
 };
 </script>
 
 <style>
-nav div a {
-  margin-right: 10px;
-}
-#app {
-  width: 800px;
-  margin: 0 auto;
-}
 a {
   text-decoration: underline;
   cursor: pointer;

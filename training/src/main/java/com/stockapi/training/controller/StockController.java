@@ -19,36 +19,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/stock")
 public class StockController {
-    
+
     @Autowired
     private StockRepository stockRepository;
 
     @GetMapping
-    public List<Stock> Listar(){
+    public List<Stock> Listar() {
         return stockRepository.findAll();
     }
 
     @PostMapping
-    public Stock adicionar(@RequestBody Stock stock){
+    public Stock adicionar(@RequestBody Stock stock) {
         return stockRepository.save(stock);
     }
 
     @PutMapping("/{id}")
-    public Stock replaceStock(@RequestBody Stock newStock, @PathVariable Long id){
-       
+    public Stock replaceStock(@RequestBody Stock newStock, @PathVariable Long id) {
+
         return stockRepository.findById(id)
-         .map(stock -> {
-            stock.setAsk_max(newStock.getAsk_max() != 0 ? newStock.getAsk_max() : stock.getAsk_max());
-            stock.setAsk_min(newStock.getAsk_min() != 0 ? newStock.getAsk_min() : stock.getAsk_min());
-            stock.setBid_max(newStock.getBid_max() != 0 ? newStock.getBid_max() : stock.getBid_max());
-            stock.setBid_min(newStock.getBid_min() != 0 ? newStock.getBid_min() : stock.getBid_min());
-            stock.setUpdated_on(Date.from(Instant.now()));
-            return stockRepository.save(stock);
+                .map(stock -> {
+                    stock.setAsk_min(newStock.getAsk_min());
+                    stock.setAsk_max(newStock.getAsk_max());
+                    stock.setBid_max(newStock.getBid_max());
+                    stock.setBid_min(newStock.getBid_min());
+                    stock.setUpdated_on(Date.from(Instant.now()));
+                    return stockRepository.save(stock);
 
-        }).orElseGet(() -> {
-            newStock.setId(id);
-            return stockRepository.save(newStock);
-        });
-
+                }).orElseGet(() -> {
+                    newStock.setId(id);
+                    return stockRepository.save(newStock);
+                });
     }
 }

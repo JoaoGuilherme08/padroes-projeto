@@ -1,4 +1,5 @@
 package com.solinftec.training.solinfbroker.controller;
+
 import org.springframework.web.bind.annotation.RestController;
 
 import com.solinftec.training.solinfbroker.repository.UsersRepository;
@@ -20,9 +21,9 @@ import com.solinftec.training.solinfbroker.model.Users;
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
-    
+
     IUserService userService;
-    
+
     public UsuarioController(UsersRepository usersRepository, IUserService userService) {
         super();
         this.usersRepository = usersRepository;
@@ -38,23 +39,24 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<?>  adicionar(@RequestBody Users user){
+    public ResponseEntity<?> adicionar(@RequestBody Users user) {
         return userService.save(user);
     }
 
     @PutMapping("/{id}")
-    public Users replaceUsers(@RequestBody Users newUsers, @PathVariable Long id){
-       
-        return usersRepository.findById(id)
-         .map(usuario -> {
-            usuario.setUsername(newUsers.getUsername());
-            usuario.setUpdated_on(Date.from(Instant.now()));
-            return usersRepository.save(usuario);
+    public Users replaceUsers(@RequestBody Users newUsers, @PathVariable Long id) {
 
-        }).orElseGet(() -> {
-            newUsers.setId(id);
-            return usersRepository.save(newUsers);
-        });
+        return usersRepository.findById(id)
+                .map(usuario -> {
+                    usuario.setUsername(newUsers.getUsername());
+                    usuario.setEnabled(newUsers.isEnabled());
+                    usuario.setUpdated_on(Date.from(Instant.now()));
+                    return usersRepository.save(usuario);
+
+                }).orElseGet(() -> {
+                    newUsers.setId(id);
+                    return usersRepository.save(newUsers);
+                });
 
     }
-}   
+}

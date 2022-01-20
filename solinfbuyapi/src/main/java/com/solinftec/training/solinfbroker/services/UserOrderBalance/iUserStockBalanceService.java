@@ -1,5 +1,6 @@
 package com.solinftec.training.solinfbroker.services.UserOrderBalance;
 
+import com.solinftec.training.solinfbroker.model.UserOrders;
 import com.solinftec.training.solinfbroker.model.UserStockBalances;
 
 import org.springframework.http.ResponseEntity;
@@ -7,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 public interface iUserStockBalanceService {
     UserStockBalances finByUserAndStock(long idUser, long idStock);
 
-    UserStockBalances finByUserAndStock(long idUser, long idStock, UserOrders orders);
+    UserStockBalances finByUserAndStockOrder(UserOrders orders);
 
     UserStockBalances finByUser(long idUser);
 
     ResponseEntity<?> updateStockUser(long idUser, long idStock, long volume);
+
+    UserStockBalances save(UserStockBalances balances);
 }

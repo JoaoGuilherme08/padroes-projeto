@@ -20,7 +20,7 @@ public class UserStockBalances {
     private long id_stock;
     private String stock_symbol;
     private String stock_name;
-    private int volume;
+    private long volume;
     @CreationTimestamp
     private Date created_on;
     @UpdateTimestamp
@@ -58,11 +58,11 @@ public class UserStockBalances {
         this.stock_name = stock_name;
     }
 
-    public int getVolume() {
+    public long getVolume() {
         return volume;
     }
 
-    public void setVolume(int volume) {
+    public void setVolume(long volume) {
         this.volume = volume;
     }
 

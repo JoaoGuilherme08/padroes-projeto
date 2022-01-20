@@ -7,6 +7,7 @@ import java.util.Map;
 import com.solinftec.training.solinfbroker.bean.compra;
 import com.solinftec.training.solinfbroker.bean.venda;
 import com.solinftec.training.solinfbroker.model.UserOrders;
+import com.solinftec.training.solinfbroker.model.UserStockBalances;
 import com.solinftec.training.solinfbroker.model.Users;
 import com.solinftec.training.solinfbroker.repository.UserOrderRepository;
 import com.solinftec.training.solinfbroker.services.UserOrderBalance.iUserStockBalanceService;
@@ -50,12 +51,10 @@ public class UserOrderService implements IUserOrderService {
     public ResponseEntity<?> save(UserOrders userOrders, String userToken) {
 
         if (userOrders.getType() == 2 && validaBalance(userOrders)) { // venda
-            System.out.print(userOrders);
             userOrderRepository.save(userOrders);
             atualiza(userOrders);
             remove(userOrders);
         } else if (userOrders.getType() == 1) {// compra
-            System.out.print(userOrders);
             userOrderRepository.save(userOrders);
             remove(userOrders);
         }
@@ -63,13 +62,14 @@ public class UserOrderService implements IUserOrderService {
         // region Comunicação API Stock
         var venda = new venda();
         var compra = new compra();
+
+        RestTemplate template = new RestTemplate();
+
         UriComponents uri = UriComponentsBuilder.newInstance()
                 .scheme("http")
                 .host("localhost:8084")
                 .path("stock/{id}")
                 .build();
-
-        RestTemplate template = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -102,16 +102,18 @@ public class UserOrderService implements IUserOrderService {
 
     private void atualiza(UserOrders userOrders) {
         long SaldoAtualUser = iUserStockBalanceService
-                .finByUserAndStock(userOrders.getId_user(), userOrders.getId_stock(), userOrders).getVolume();
+                .finByUserAndStockOrder(userOrders).getVolume();
+
+        UserStockBalances stocks = iUserStockBalanceService
+                .finByUserAndStockOrder(userOrders);
 
         if (userOrders.getType() == 2) {
             iUserStockBalanceService.updateStockUser(userOrders.getId_user(), userOrders.getId_stock(),
                     SaldoAtualUser - userOrders.getVolume());
         } else {
-            iUserStockBalanceService.updateStockUser(userOrders.getId_user(), userOrders.getId_stock(),
-                    SaldoAtualUser + 1);
+            stocks.setVolume(stocks.getVolume() + 1);
+            iUserStockBalanceService.save(stocks);
         }
-
     }
 
     private ResponseEntity<?> remove(UserOrders order_recebidap) {
@@ -126,6 +128,7 @@ public class UserOrderService implements IUserOrderService {
                 while (userOrderRepository.findId(order.getId()).getVolume() > 0
                         && userOrderRepository.findId(order_recebida.getId()).getVolume() > 0) {
 
+                    System.out.print("PASSEI PELO WILE \n");
                     order = userOrderRepository.findId(order.getId());
                     user = userService.Listar(order.getId_user());
                     order_recebida = userOrderRepository.findId(order_recebida.getId());

@@ -22,14 +22,16 @@ public class UserStockBalanceService implements iUserStockBalanceService {
         }
     }
 
+    long soma = 0;
+
     @Override
-    public UserStockBalances finByUserAndStock(long idUser, long idStock, UserOrders orders) {
-        if (userStockBalanceRepository.finByUserAndStock(idUser, idStock) != null) {
-            return userStockBalanceRepository.finByUserAndStock(idUser, idStock);
+    public UserStockBalances finByUserAndStockOrder(UserOrders orders) {
+        if (userStockBalanceRepository.finByUserAndStock(orders.getId_user(), orders.getId_stock()) != null) {
+            return userStockBalanceRepository.finByUserAndStock(orders.getId_user(), orders.getId_stock());
         } else {
             UserStockBalances newBalance = new UserStockBalances();
-            newBalance.setId_stock(idStock);
-            newBalance.setId_user(idUser);
+            newBalance.setId_stock(orders.getId_stock());
+            newBalance.setId_user(orders.getId_user());
             newBalance.setStock_name(orders.getStock_name());
             newBalance.setStock_symbol(orders.getStock_symbol());
             newBalance.setVolume(0);
@@ -46,6 +48,13 @@ public class UserStockBalanceService implements iUserStockBalanceService {
 
     @Override
     public ResponseEntity<?> updateStockUser(long idUser, long idStock, long volume) {
-        return ResponseEntity.ok().body(userStockBalanceRepository.updateBalances(idUser, idStock, volume));
+        userStockBalanceRepository.updateBalances(idUser, idStock, volume);
+        return ResponseEntity.ok().body("Usuario Updatade");
+    }
+
+    @Override
+    public UserStockBalances save(UserStockBalances balances) {
+
+        return userStockBalanceRepository.save(balances);
     }
 }

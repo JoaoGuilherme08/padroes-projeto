@@ -1,5 +1,7 @@
 package com.solinftec.training.solinfbroker.services.UserService;
 
+import java.util.List;
+
 import com.solinftec.training.solinfbroker.model.Users;
 import com.solinftec.training.solinfbroker.repository.UsersRepository;
 
@@ -17,18 +19,25 @@ public class UserService implements IUserService {
 
     @Autowired
     private UsersRepository usersRepository;
-    
+
     @Override
     public ResponseEntity<?> save(Users users) {
-        usersRepository.save(users);
-        
-        return ResponseEntity.ok().body(users);
+
+        Users usersExistente = usersRepository.findUserExistente(users.getUsername());
+
+        if (usersExistente != null && usersExistente.getUsername() != "") {
+            return ResponseEntity.badRequest().body("Email já cadastrado");
+        } else {
+            usersRepository.save(users);
+
+            return ResponseEntity.ok().body(users);
+        }
     }
 
     @Override
     public Users Listar(long id) {
-        
+
         return usersRepository.findId(id);
     }
-    
+
 }

@@ -7,6 +7,7 @@ import com.solinftec.training.solinfbroker.services.UserService.IUserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,6 +20,7 @@ import java.util.Date;
 import com.solinftec.training.solinfbroker.model.Users;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
@@ -34,7 +36,8 @@ public class UsuarioController {
     private UsersRepository usersRepository;
 
     @GetMapping("/{id}")
-    public Users listar(@PathVariable("id") Long id) {
+    public Users listar(@PathVariable("id") long id) {
+        System.out.println("idRecebido" + id + "\n");
         return userService.Listar(id);
     }
 

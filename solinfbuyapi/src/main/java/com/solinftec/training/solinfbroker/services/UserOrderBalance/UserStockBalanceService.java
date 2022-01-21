@@ -1,5 +1,7 @@
 package com.solinftec.training.solinfbroker.services.UserOrderBalance;
 
+import java.util.List;
+
 import com.solinftec.training.solinfbroker.model.UserOrders;
 import com.solinftec.training.solinfbroker.model.UserStockBalances;
 import com.solinftec.training.solinfbroker.repository.UserStockBalanceRepository;
@@ -21,8 +23,6 @@ public class UserStockBalanceService implements iUserStockBalanceService {
             return userStockBalanceRepository.finByUserAndStock(idUser, idStock);
         }
     }
-
-    long soma = 0;
 
     @Override
     public UserStockBalances finByUserAndStockOrder(UserOrders orders) {
@@ -57,4 +57,11 @@ public class UserStockBalanceService implements iUserStockBalanceService {
 
         return userStockBalanceRepository.save(balances);
     }
+
+    @Override
+    public List<UserStockBalances[]> findByEmail(String email) {
+
+        return userStockBalanceRepository.findByEmail(email);
+    }
+
 }

@@ -1,10 +1,7 @@
 package com.solinftec.training.solinfbroker.services.UserService;
 
-import java.util.List;
-
 import com.solinftec.training.solinfbroker.model.Users;
 import com.solinftec.training.solinfbroker.repository.UsersRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

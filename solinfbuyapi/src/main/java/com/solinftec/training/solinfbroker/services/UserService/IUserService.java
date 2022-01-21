@@ -5,5 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface IUserService {
     ResponseEntity<?> save(Users users);
+
     Users Listar(long id);
 }

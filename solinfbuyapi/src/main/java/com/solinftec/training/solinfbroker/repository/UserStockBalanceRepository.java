@@ -1,5 +1,7 @@
 package com.solinftec.training.solinfbroker.repository;
 
+import java.util.List;
+
 import com.solinftec.training.solinfbroker.model.UserStockBalances;
 import com.solinftec.training.solinfbroker.model.UserStockBalancesPKId;
 
@@ -17,6 +19,9 @@ public interface UserStockBalanceRepository extends JpaRepository<UserStockBalan
 
     @Query(value = "SELECT * FROM user_stock_balances WHERE id_user = ?1", nativeQuery = true)
     UserStockBalances finByUser(long idUser);
+
+    @Query(value = "select usb.* from user_stock_balances usb inner join users u on u.id = usb.id_user where u.username = :email order by volume desc", nativeQuery = true)
+    List<UserStockBalances[]> findByEmail(String email);
 
     @Modifying
     @Transactional

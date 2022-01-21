@@ -93,7 +93,7 @@ public class UserOrderService implements IUserOrderService {
 
         System.out.println(jsonObject.toString());
 
-        HttpEntity<String> response = template.exchange(uri.toString(), HttpMethod.PUT, request, String.class, param);
+        template.exchange(uri.toString(), HttpMethod.PUT, request, String.class, param);
 
         // endregion
 
@@ -128,7 +128,6 @@ public class UserOrderService implements IUserOrderService {
                 while (userOrderRepository.findId(order.getId()).getVolume() > 0
                         && userOrderRepository.findId(order_recebida.getId()).getVolume() > 0) {
 
-                    System.out.print("PASSEI PELO WILE \n");
                     order = userOrderRepository.findId(order.getId());
                     user = userService.Listar(order.getId_user());
                     order_recebida = userOrderRepository.findId(order_recebida.getId());

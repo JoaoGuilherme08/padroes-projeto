@@ -1,5 +1,7 @@
 package com.solinftec.training.solinfbroker.services.UserOrderBalance;
 
+import java.util.List;
+
 import com.solinftec.training.solinfbroker.model.UserOrders;
 import com.solinftec.training.solinfbroker.model.UserStockBalances;
 
@@ -12,7 +14,10 @@ public interface iUserStockBalanceService {
 
     UserStockBalances finByUser(long idUser);
 
+    List<UserStockBalances[]> findByEmail(String email);
+
     ResponseEntity<?> updateStockUser(long idUser, long idStock, long volume);
 
     UserStockBalances save(UserStockBalances balances);
+
 }

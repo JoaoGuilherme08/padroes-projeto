@@ -18,7 +18,7 @@ public class UserStockBalancesPKId implements Serializable {
         return id_stock;
     }
 
-    public void setId_stock(int id_stock) {
+    public void setId_stock(long id_stock) {
         this.id_stock = id_stock;
     }
 

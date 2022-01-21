@@ -7,4 +7,6 @@ public interface IUserService {
     ResponseEntity<?> save(Users users);
 
     Users Listar(long id);
+
+    Users ListarEmail(String email);
 }

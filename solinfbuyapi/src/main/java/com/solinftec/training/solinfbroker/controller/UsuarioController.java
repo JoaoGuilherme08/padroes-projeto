@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.Instant;
 import java.util.Date;
@@ -35,10 +36,16 @@ public class UsuarioController {
     @Autowired
     private UsersRepository usersRepository;
 
-    @GetMapping("/{id}")
-    public Users listar(@PathVariable("id") long id) {
-        System.out.println("idRecebido" + id + "\n");
-        return userService.Listar(id);
+    @GetMapping()
+    public Users listar(@RequestParam(required = false, defaultValue = "0") long id,
+            @RequestParam(required = false, defaultValue = "0") String email) {
+
+        if (email != "") {
+            return userService.ListarEmail(email);
+        } else {
+            return userService.Listar(id);
+        }
+
     }
 
     @PostMapping

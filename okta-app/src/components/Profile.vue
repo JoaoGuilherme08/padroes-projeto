@@ -22,6 +22,7 @@
                     class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
                     Name
+                    <div class="text-xs text-gray-500">Email</div>
                   </th>
                   <th
                     scope="col"
@@ -34,6 +35,12 @@
                     class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
                     Status
+                  </th>
+                  <th
+                    scope="col"
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                  >
+                    Saldo atual
                   </th>
                 </tr>
               </thead>
@@ -63,6 +70,11 @@
                     >
                       Active
                     </span>
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="text-sm text-gray-500">
+                      {{ person.dinheiro }}
+                    </div>
                   </td>
                 </tr>
               </tbody>
@@ -122,16 +134,25 @@
                   <td class="px-6 py-4 whitespace-nowrap">
                     <div class="text-sm text-gray-900">{{ acao.name }}</div>
                   </td>
-                  <td
-                    class="px-6 py-4 whitespace-nowrap mx-auto"
-                    style="padding-left: 60px"
-                  >
+                  <td class="px-10 py-4 whitespace-nowrap mx-auto">
                     <div class="text-sm text-gray-500">
                       {{ acao.volume }}
                     </div>
                   </td>
                 </tr>
               </tbody>
+              <tfoot>
+                <tr>
+                  <td></td>
+                  <td></td>
+                  <th
+                    scope="col"
+                    class="px-4 py-1 text-left text-sm font-medium text-gray-700 uppercase tracking-wider"
+                  >
+                    Total: {{ total }}
+                  </th>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </div>
@@ -146,6 +167,7 @@ export default {
   data: () => ({
     people: [],
     acoes: [],
+    total: 0,
   }),
   created() {
     this.setup();
@@ -155,11 +177,17 @@ export default {
     async setup() {
       if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();
+        let accessToken = this.$auth.getAccessToken();
 
+        let response = await axios.get(
+          `http://localhost:8083/usuarios?email=${this.claims.email}`,
+          { headers: { Authorization: "Bearer " + accessToken } }
+        );
         this.people.push({
           name: this.claims.name,
           email: this.claims.email,
           pais: this.claims.locale,
+          dinheiro: "R$ " + response.data.dollar_balance.toFixed(2),
         });
       }
     },
@@ -167,7 +195,7 @@ export default {
       if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();
         let accessToken = this.$auth.getAccessToken();
-        console.log(accessToken);
+        // console.log(accessToken);
         try {
           let response = await axios.get(
             `http://localhost:8083/stockbalances?email=${this.claims.email}`,
@@ -179,6 +207,7 @@ export default {
               name: response.data[key][0].stock_name,
               volume: response.data[key][0].volume,
             });
+            this.total += parseInt(response.data[key][0].volume, 10);
           }
         } catch (error) {
           this.acoes = `${error}`;

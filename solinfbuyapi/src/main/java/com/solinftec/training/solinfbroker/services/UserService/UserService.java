@@ -37,4 +37,9 @@ public class UserService implements IUserService {
         return usersRepository.findId(id);
     }
 
+    @Override
+    public Users ListarEmail(String email) {
+        return usersRepository.findUserExistente(email);
+    }
+
 }

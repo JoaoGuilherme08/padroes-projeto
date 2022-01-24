@@ -32,6 +32,8 @@ public class UserOrderController {
             return ResponseEntity.ok().body(userOrderService.findByUserId(user));
         } else if (user != 0 && type != 0) {
             return ResponseEntity.ok().body(userOrderService.findbyUserIdAndType(user, type));
+        } else if (type != 0) {
+            return ResponseEntity.ok().body(userOrderService.findByType(type));
         } else {
             return ResponseEntity.badRequest().body("Erro ao listar a ordem.");
         }
@@ -40,7 +42,6 @@ public class UserOrderController {
     @PostMapping()
     public ResponseEntity<?> adicionar(@RequestHeader("Authorization") String userToken,
             @RequestBody UserOrders userOrders) {
-        System.out.println("Passei Metodo Adicionar");
         return userOrderService.save(userOrders, userToken);
     }
 

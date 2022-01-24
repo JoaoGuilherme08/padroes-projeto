@@ -39,7 +39,15 @@ public class UserService implements IUserService {
 
     @Override
     public Users ListarEmail(String email) {
-        return usersRepository.findUserExistente(email);
+        if (usersRepository.findUserExistente(email) == null) {
+            Users user = new Users();
+            user.setUsername(email);
+            user.setEnabled(true);
+            user.setDollar_balance(0.00);
+            return usersRepository.save(user);
+        } else {
+            return usersRepository.findUserExistente(email);
+        }
     }
 
 }

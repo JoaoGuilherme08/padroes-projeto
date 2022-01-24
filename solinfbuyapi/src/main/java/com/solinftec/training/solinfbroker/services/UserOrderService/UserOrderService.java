@@ -198,4 +198,10 @@ public class UserOrderService implements IUserOrderService {
             return false;
         }
     }
+
+    @Override
+    public List<UserOrders> findByType(int type) {
+
+        return userOrderRepository.findByType(type);
+    }
 }

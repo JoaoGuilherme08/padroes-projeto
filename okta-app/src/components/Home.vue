@@ -10,9 +10,6 @@
 
     <div v-if="this.$root.authenticated">
       <p>Welcome, {{ claims.name }}!</p>
-      <p>
-        {{ this.caffeineLevel }}
-      </p>
     </div>
   </div>
 </template>
@@ -25,7 +22,6 @@ export default {
   data: function () {
     return {
       claims: "",
-      caffeineLevel: "",
     };
   },
   created() {
@@ -36,15 +32,15 @@ export default {
       if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();
         let accessToken = this.$auth.getAccessToken();
-        console.log(`Authorization: Bearer ${accessToken}`);
         try {
           let response = await axios.get(
-            "http://localhost:8082/howcaffeinatedami",
+            `http://localhost:8083/usuarios?email=${this.claims.email}`,
             { headers: { Authorization: "Bearer " + accessToken } }
           );
-          this.caffeineLevel = response.data;
+
+          console.log(response.data);
         } catch (error) {
-          this.caffeineLevel = `${error}`;
+          console.log(error);
         }
       }
     },

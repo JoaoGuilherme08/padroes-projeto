@@ -91,8 +91,6 @@ public class UserOrderService implements IUserOrderService {
 
         HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
 
-        System.out.println(jsonObject.toString());
-
         template.exchange(uri.toString(), HttpMethod.PUT, request, String.class, param);
 
         // endregion
@@ -122,14 +120,18 @@ public class UserOrderService implements IUserOrderService {
 
         List<UserOrders> ordersList = userOrderRepository.findByTypeAndStockNotId(order_recebida.getType() == 1 ? 2 : 1,
                 order_recebida.getId_stock(), order_recebida.getId_user());
+
         for (UserOrders order : ordersList) {
+
             if (order_recebida.getType() == 1 ? order.getPrice() <= order_recebida.getPrice()
                     : order.getPrice() >= order_recebida.getPrice()) {
+
                 while (userOrderRepository.findId(order.getId()).getVolume() > 0
                         && userOrderRepository.findId(order_recebida.getId()).getVolume() > 0) {
 
                     order = userOrderRepository.findId(order.getId());
                     user = userService.Listar(order.getId_user());
+
                     order_recebida = userOrderRepository.findId(order_recebida.getId());
                     order_user = userService.Listar(order_recebida.getId_user());
 

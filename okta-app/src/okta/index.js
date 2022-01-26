@@ -23,4 +23,5 @@ const oktaAuth = new OktaAuth({
   scopes: ["openid", "profile", "email"],
 });
 
+console.log(window.location.origin);
 export { oktaAuth, oktaSignIn };

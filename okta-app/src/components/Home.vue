@@ -32,6 +32,7 @@ export default {
       if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();
         let accessToken = this.$auth.getAccessToken();
+        console.log(accessToken);
         try {
           let response = await axios.get(
             `http://localhost:8083/usuarios?email=${this.claims.email}`,

@@ -52,4 +52,5 @@ public class StockController {
                     return stockRepository.save(newStock);
                 });
     }
+
 }

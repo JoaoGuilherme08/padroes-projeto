@@ -246,6 +246,9 @@
 
 <script>
 import axios from "axios";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+
 export default {
   data: () => ({
     acoes: [],
@@ -256,12 +259,79 @@ export default {
     ocultaMsgOk: false,
     showModal: false,
     infosUser: [],
+    received_messages: [],
+    send_message: null,
+    objetoMsg: [],
+    connected: false
   }),
   created() {
     this.BuscaCarteira();
     this.setup();
+    this.connect();
   },
   methods: {
+
+    send() {
+      console.log("Send message:" + this.send_message);
+      if (this.stompClient && this.stompClient.connected) {
+        const msg = { name: this.send_message };
+        this.objetoMsg = JSON.stringify(msg);
+        this.stompClient.send("/chat", JSON.stringify(msg), {});
+      }
+    },
+    connect() {
+      this.socket = new SockJS("http://localhost:8084/chat");
+      this.stompClient = Stomp.over(this.socket);
+      
+      this.stompClient.connect(
+        {},
+        frame => {
+          this.connected = true;
+          console.log(frame);
+          this.stompClient.subscribe("/topic/pushmessages", tick => {
+
+            for(var key in this.acoes){
+              if(this.acoes[key].id == JSON.parse(tick.body).record.id){
+                  this.acoes[key].id = JSON.parse(tick.body).record.id;
+                  this.acoes[key].simbol = JSON.parse(tick.body).record.stock_symbol;
+                  this.acoes[key].name = JSON.parse(tick.body).record.stock_name;
+               this.acoes[key].askmin =
+                JSON.parse(tick.body).record.ask_min == null
+                  ? 0
+                  : JSON.parse(tick.body).record.ask_min;
+               this.acoes[key].askmax =
+                JSON.parse(tick.body).record.ask_max == null
+                  ? 0
+                  : JSON.parse(tick.body).record.ask_max;
+               this.acoes[key].bidmin =
+                JSON.parse(tick.body).record.bid_min == null
+                  ? 0
+                  : JSON.parse(tick.body).record.bid_min;
+               this.acoes[key].bidmax =
+                JSON.parse(tick.body).record.bid_max == null
+                  ? 0
+                  : JSON.parse(tick.body).record.bid_max;
+              }
+            }
+                this.received_messages.push(JSON.parse(tick.body).content);
+          });
+        },
+        error => {
+          console.log(error);
+          this.connected = false;
+        }
+      );
+    },
+    disconnect() {
+      if (this.stompClient) {
+        this.stompClient.disconnect();
+      }
+      this.connected = false;
+    },
+    tickleConnection() {
+      this.connected ? this.disconnect() : this.connect();
+    },
+
     async setup() {
       if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();

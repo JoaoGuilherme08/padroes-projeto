@@ -1,15 +1,17 @@
-package com.stockapi.training.service;
+package com.solinftec.training.solinfbroker.websocket.services;
 
 import java.sql.*;
-import com.stockapi.training.conectionBanco.PGConn;
+
+import com.solinftec.training.solinfbroker.websocket.conectionBanco.PGConn;
+
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ScheduledPushMessages {
+public class ScheduledPushMessagesOrders {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public ScheduledPushMessages(SimpMessagingTemplate simpMessagingTemplate) throws SQLException {
+    public ScheduledPushMessagesOrders(SimpMessagingTemplate simpMessagingTemplate) throws SQLException {
         this.simpMessagingTemplate = simpMessagingTemplate;
 
         Connection lConn = PGConn.getConn();
@@ -21,13 +23,13 @@ public class ScheduledPushMessages {
 
         private Connection conn;
         private org.postgresql.PGConnection pgconn;
-        ScheduledPushMessages scheduledPushMessages;
+        ScheduledPushMessagesOrders scheduledPushMessages;
 
         Listener(Connection conn) throws SQLException {
             this.conn = conn;
             this.pgconn = (org.postgresql.PGConnection) conn;
             Statement stmt = conn.createStatement();
-            stmt.execute("LISTEN listenstocks");
+            stmt.execute("LISTEN listenorders");
             stmt.close();
         }
 
@@ -38,7 +40,9 @@ public class ScheduledPushMessages {
                     org.postgresql.PGNotification notifications[] = pgconn.getNotifications();
                     if (notifications != null) {
                         for (int i = 0; i < notifications.length; i++) {
-                            simpMessagingTemplate.convertAndSend("/topic/pushmessages",
+                            System.out.println("PUSH ORDERS");
+                            System.out.println(notifications[i].getName());
+                            simpMessagingTemplate.convertAndSend("/topic/pushorders",
                                     notifications[i].getParameter());
                         }
                     }

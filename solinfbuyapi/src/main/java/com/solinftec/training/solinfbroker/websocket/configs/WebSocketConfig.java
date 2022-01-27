@@ -1,4 +1,4 @@
-package com.stockapi.training.configs;
+package com.solinftec.training.solinfbroker.websocket.configs;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
@@ -20,8 +20,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(final StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat");
-        registry.addEndpoint("/chat").setAllowedOrigins("http://localhost:8080").withSockJS();
+        registry.addEndpoint("/profile");
+        registry.addEndpoint("/profile").setAllowedOrigins("http://localhost:8080").withSockJS();
     }
 
 }

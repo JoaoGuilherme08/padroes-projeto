@@ -262,7 +262,7 @@ export default {
     received_messages: [],
     send_message: null,
     objetoMsg: [],
-    connected: false
+    connected: false,
   }),
   created() {
     this.BuscaCarteira();
@@ -270,7 +270,6 @@ export default {
     this.connect();
   },
   methods: {
-
     send() {
       console.log("Send message:" + this.send_message);
       if (this.stompClient && this.stompClient.connected) {
@@ -282,41 +281,42 @@ export default {
     connect() {
       this.socket = new SockJS("http://localhost:8084/chat");
       this.stompClient = Stomp.over(this.socket);
-      
+      let accessToken = this.$auth.getAccessToken();
       this.stompClient.connect(
-        {},
-        frame => {
+        { "X-Authorization": "Bearer " + accessToken },
+        (frame) => {
           this.connected = true;
           console.log(frame);
-          this.stompClient.subscribe("/topic/pushmessages", tick => {
-
-            for(var key in this.acoes){
-              if(this.acoes[key].id == JSON.parse(tick.body).record.id){
-                  this.acoes[key].id = JSON.parse(tick.body).record.id;
-                  this.acoes[key].simbol = JSON.parse(tick.body).record.stock_symbol;
-                  this.acoes[key].name = JSON.parse(tick.body).record.stock_name;
-               this.acoes[key].askmin =
-                JSON.parse(tick.body).record.ask_min == null
-                  ? 0
-                  : JSON.parse(tick.body).record.ask_min;
-               this.acoes[key].askmax =
-                JSON.parse(tick.body).record.ask_max == null
-                  ? 0
-                  : JSON.parse(tick.body).record.ask_max;
-               this.acoes[key].bidmin =
-                JSON.parse(tick.body).record.bid_min == null
-                  ? 0
-                  : JSON.parse(tick.body).record.bid_min;
-               this.acoes[key].bidmax =
-                JSON.parse(tick.body).record.bid_max == null
-                  ? 0
-                  : JSON.parse(tick.body).record.bid_max;
+          this.stompClient.subscribe("/topic/pushmessages", (tick) => {
+            for (var key in this.acoes) {
+              if (this.acoes[key].id == JSON.parse(tick.body).record.id) {
+                this.acoes[key].id = JSON.parse(tick.body).record.id;
+                this.acoes[key].simbol = JSON.parse(
+                  tick.body
+                ).record.stock_symbol;
+                this.acoes[key].name = JSON.parse(tick.body).record.stock_name;
+                this.acoes[key].askmin =
+                  JSON.parse(tick.body).record.ask_min == null
+                    ? 0
+                    : JSON.parse(tick.body).record.ask_min;
+                this.acoes[key].askmax =
+                  JSON.parse(tick.body).record.ask_max == null
+                    ? 0
+                    : JSON.parse(tick.body).record.ask_max;
+                this.acoes[key].bidmin =
+                  JSON.parse(tick.body).record.bid_min == null
+                    ? 0
+                    : JSON.parse(tick.body).record.bid_min;
+                this.acoes[key].bidmax =
+                  JSON.parse(tick.body).record.bid_max == null
+                    ? 0
+                    : JSON.parse(tick.body).record.bid_max;
               }
             }
-                this.received_messages.push(JSON.parse(tick.body).content);
+            this.received_messages.push(JSON.parse(tick.body).content);
           });
         },
-        error => {
+        (error) => {
           console.log(error);
           this.connected = false;
         }

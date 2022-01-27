@@ -138,6 +138,9 @@
               class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
             >
               <table class="min-w-full divide-y divide-gray-200">
+                <caption style="background-color: #b3e2ff">
+                  Ordens disponíveis para venda
+                </caption>
                 <thead class="bg-gray-50">
                   <tr style="background-color: #71fb75">
                     <th
@@ -206,6 +209,99 @@
                     </th>
                   </tr>
                 </tfoot>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+        style="
+          width: 1200px;
+          margin-top: 50px;
+          margin-left: auto;
+          margin-right: auto;
+        "
+        v-show="ocultaOrder"
+      >
+        <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-3">
+          <div
+            class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8"
+          >
+            <div
+              class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
+            >
+              <table class="min-w-full divide-y divide-gray-200">
+                <caption style="background-color: #b3e2ff">
+                  Ordens de Compra e Venda
+                </caption>
+                <thead class="bg-gray-50">
+                  <tr style="background-color: #ff7059">
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    >
+                      Simbolo Ação
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    >
+                      Nome Ação
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    >
+                      Quantidade
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    >
+                      Valor
+                    </th>
+                    <th
+                      scope="col"
+                      class="px-1 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    >
+                      Tipo da Order
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr v-for="(order, i) in Orders" :key="i">
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="flex items-center">
+                        <div class="ml-4">
+                          <div class="text-sm font-medium text-gray-900">
+                            {{ order.simbol }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-900">
+                        {{ order.name }}
+                      </div>
+                    </td>
+                    <td class="px-12 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-500">
+                        {{ order.quantidade }}
+                      </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-500">
+                        R$ {{ order.preco }}
+                      </div>
+                    </td>
+                    <td class="px-1 py-4 whitespace-nowrap">
+                      <div class="text-sm text-gray-500">
+                        {{ order.type }}
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -313,6 +409,9 @@
 
 <script>
 import axios from "axios";
+import SockJS from "sockjs-client";
+import Stomp from "webstomp-client";
+
 export default {
   data: () => ({
     people: [],
@@ -321,16 +420,81 @@ export default {
     acoesRecebidas: [],
     showModal: false,
     infosUser: [],
+    Orders: [],
     mensagemErro: "",
     ocultaMsg: false,
     mensagemOk: "",
     ocultaMsgOk: false,
+    ocultaOrder: false,
   }),
   created() {
     this.setup();
     this.BuscaCarteira();
+    this.BuscaOrders();
+    this.connect();
   },
   methods: {
+    connect() {
+      this.socket = new SockJS("http://localhost:8083/profile");
+      this.stompClient = Stomp.over(this.socket);
+      let accessToken = this.$auth.getAccessToken();
+      this.stompClient.connect(
+        { "X-Authorization": "Bearer " + accessToken },
+        (frame) => {
+          this.connected = true;
+          console.log(frame);
+          this.stompClient.subscribe("/topic/pushorders", (tick) => {
+            if (JSON.parse(tick.body).orders == true) {
+              for (var key in this.Orders) {
+                if (this.Orders[key].id == JSON.parse(tick.body).record.id) {
+                  this.Orders[key].id = JSON.parse(tick.body).record.id;
+                  this.Orders[key].id_stock = JSON.parse(
+                    tick.body
+                  ).record.id_stock;
+                  this.Orders[key].name = JSON.parse(
+                    tick.body
+                  ).record.stock_name;
+                  this.Orders[key].simbol = JSON.parse(
+                    tick.body
+                  ).record.stock_symbol;
+                  this.Orders[key].quantidade = JSON.parse(
+                    tick.body
+                  ).record.volume;
+                  this.Orders[key].preco = JSON.parse(
+                    tick.body
+                  ).record.price.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                  });
+                  (this.Orders[key].type =
+                    JSON.parse(tick.body).record.type == 1
+                      ? "COMPRA"
+                      : "VENDA"),
+                    (this.Orders[key].status = JSON.parse(
+                      tick.body
+                    ).record.status);
+                }
+              }
+            } else if (JSON.parse(tick.body).users == true) {
+              this.people[0].dinheiro =
+                "R$ " + JSON.parse(tick.body).record.dollar_balance.toFixed(2);
+            }
+
+            this.received_messages.push(JSON.parse(tick.body).content);
+          });
+        },
+        (error) => {
+          console.log(error);
+          this.connected = false;
+        }
+      );
+    },
+
+    disconnect() {
+      if (this.stompClient) {
+        this.stompClient.disconnect();
+      }
+      this.connected = false;
+    },
     async setup() {
       if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();
@@ -349,6 +513,38 @@ export default {
           pais: this.claims.locale,
           dinheiro: "R$ " + response.data.dollar_balance.toFixed(2),
         });
+      }
+    },
+    async BuscaOrders() {
+      if (this.$root.authenticated) {
+        this.claims = await this.$auth.getUser();
+        let accessToken = this.$auth.getAccessToken();
+        // console.log(accessToken);
+        try {
+          let response = await axios.get(
+            `http://localhost:8083/userorder?user=${this.infosUser.data.id}`,
+            { headers: { Authorization: "Bearer " + accessToken } }
+          );
+          for (var key in response.data) {
+            if (response.data[key].status != 2) {
+              this.ocultaOrder = true;
+              this.Orders.push({
+                id: response.data[key].id,
+                id_stock: response.data[key].id_stock,
+                simbol: response.data[key].stock_symbol,
+                preco: response.data[key].price.toLocaleString("pt-BR", {
+                  minimumFractionDigits: 2,
+                }),
+                type: response.data[key].type == 1 ? "COMPRA" : "VENDA",
+                quantidade: response.data[key].volume,
+                status: response.data[key].status,
+                name: response.data[key].stock_name,
+              });
+            }
+          }
+        } catch (error) {
+          this.Orders = `${error}`;
+        }
       }
     },
     async BuscaCarteira() {

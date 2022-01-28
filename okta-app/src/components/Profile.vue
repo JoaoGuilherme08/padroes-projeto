@@ -435,7 +435,7 @@ export default {
   },
   methods: {
     connect() {
-      this.socket = new SockJS("http://localhost:8083/profile");
+      this.socket = new SockJS("http://localhost:8085/profile");
       this.stompClient = Stomp.over(this.socket);
       let accessToken = this.$auth.getAccessToken();
       this.stompClient.connect(
@@ -445,41 +445,85 @@ export default {
           console.log(frame);
           this.stompClient.subscribe("/topic/pushorders", (tick) => {
             if (JSON.parse(tick.body).orders == true) {
-              for (var key in this.Orders) {
-                if (this.Orders[key].id == JSON.parse(tick.body).record.id) {
-                  this.Orders[key].id = JSON.parse(tick.body).record.id;
-                  this.Orders[key].id_stock = JSON.parse(
-                    tick.body
-                  ).record.id_stock;
-                  this.Orders[key].name = JSON.parse(
-                    tick.body
-                  ).record.stock_name;
-                  this.Orders[key].simbol = JSON.parse(
-                    tick.body
-                  ).record.stock_symbol;
-                  this.Orders[key].quantidade = JSON.parse(
-                    tick.body
-                  ).record.volume;
-                  this.Orders[key].preco = JSON.parse(
-                    tick.body
-                  ).record.price.toLocaleString("pt-BR", {
-                    minimumFractionDigits: 2,
-                  });
-                  (this.Orders[key].type =
-                    JSON.parse(tick.body).record.type == 1
-                      ? "COMPRA"
-                      : "VENDA"),
-                    (this.Orders[key].status = JSON.parse(
+              if (JSON.parse(tick.body).operation == "INSERT") {
+                this.Orders.push({
+                  id: JSON.parse(tick.body).record.id,
+                  id_stock: JSON.parse(tick.body).record.id_stock,
+                  name: JSON.parse(tick.body).record.stock_name,
+                  simbol: JSON.parse(tick.body).record.stock_symbol,
+                  preco: JSON.parse(tick.body).record.price.toLocaleString(
+                    "pt-BR",
+                    {
+                      minimumFractionDigits: 2,
+                    }
+                  ),
+                  quantidade: JSON.parse(tick.body).record.volume,
+                  type:
+                    JSON.parse(tick.body).record.type == 1 ? "COMPRA" : "VENDA",
+                  status: JSON.parse(tick.body).record.status,
+                });
+              } else {
+                for (var key in this.Orders) {
+                  if (this.Orders[key].id == JSON.parse(tick.body).record.id) {
+                    this.Orders[key].id = JSON.parse(tick.body).record.id;
+                    this.Orders[key].id_stock = JSON.parse(
                       tick.body
-                    ).record.status);
+                    ).record.id_stock;
+                    this.Orders[key].name = JSON.parse(
+                      tick.body
+                    ).record.stock_name;
+                    this.Orders[key].simbol = JSON.parse(
+                      tick.body
+                    ).record.stock_symbol;
+                    this.Orders[key].quantidade = JSON.parse(
+                      tick.body
+                    ).record.volume;
+                    this.Orders[key].preco = JSON.parse(
+                      tick.body
+                    ).record.price.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    });
+                    this.Orders[key].type =
+                      JSON.parse(tick.body).record.type == 1
+                        ? "COMPRA"
+                        : "VENDA";
+                    this.Orders[key].status = JSON.parse(
+                      tick.body
+                    ).record.status;
+                    this.ocultaOrder = true;
+                  }
                 }
               }
             } else if (JSON.parse(tick.body).users == true) {
               this.people[0].dinheiro =
                 "R$ " + JSON.parse(tick.body).record.dollar_balance.toFixed(2);
+            } else if (JSON.parse(tick.body).stockbalance == true) {
+              if (JSON.parse(tick.body).operation == "INSERT") {
+                this.acoes.push({
+                  id: JSON.parse(tick.body).record.id_stock,
+                  simbol: JSON.parse(tick.body).record.stock_symbol,
+                  name: JSON.parse(tick.body).record.stock_name,
+                  volume: JSON.parse(tick.body).record.volume,
+                });
+              } else {
+                for (var key1 in this.acoes) {
+                  if (
+                    this.acoes[key1].id == JSON.parse(tick.body).record.id_stock
+                  ) {
+                    this.acoes[key1].id = JSON.parse(tick.body).record.id_stock;
+                    this.acoes[key1].simbol = JSON.parse(
+                      tick.body
+                    ).record.stock_symbol;
+                    this.acoes[key1].name = JSON.parse(
+                      tick.body
+                    ).record.stock_name;
+                    this.acoes[key1].volume = JSON.parse(
+                      tick.body
+                    ).record.volume;
+                  }
+                }
+              }
             }
-
-            this.received_messages.push(JSON.parse(tick.body).content);
           });
         },
         (error) => {
@@ -519,7 +563,6 @@ export default {
       if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();
         let accessToken = this.$auth.getAccessToken();
-        // console.log(accessToken);
         try {
           let response = await axios.get(
             `http://localhost:8083/userorder?user=${this.infosUser.data.id}`,
@@ -650,6 +693,7 @@ export default {
         if (this.$root.authenticated) {
           this.claims = await this.$auth.getUser();
           let accessToken = this.$auth.getAccessToken();
+          console.log(parseFloat(valor.value));
           try {
             let response = await axios.post(
               `http://localhost:8083/userorder`,

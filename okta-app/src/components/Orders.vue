@@ -279,7 +279,7 @@ export default {
       }
     },
     connect() {
-      this.socket = new SockJS("http://localhost:8084/chat");
+      this.socket = new SockJS("http://localhost:8085/profile");
       this.stompClient = Stomp.over(this.socket);
       let accessToken = this.$auth.getAccessToken();
       this.stompClient.connect(

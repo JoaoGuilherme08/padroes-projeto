@@ -10,12 +10,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @SpringBootApplication
 public class SolinfbrokerApplication {
 
+    public static void main(String[] args) {
+        SpringApplication.run(SolinfbrokerApplication.class, args);
+    }
 
-	public static void main(String[] args) {
-		SpringApplication.run(SolinfbrokerApplication.class, args);
-	}
-
-	@Configuration
+    @Configuration
     @EnableWebSecurity
     class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 

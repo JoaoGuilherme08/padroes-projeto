@@ -139,7 +139,7 @@
             >
               <table class="min-w-full divide-y divide-gray-200">
                 <caption style="background-color: #b3e2ff">
-                  Ordens disponíveis para venda
+                  Ordens disponíveis para Venda
                 </caption>
                 <thead class="bg-gray-50">
                   <tr style="background-color: #71fb75">
@@ -703,7 +703,7 @@ export default {
                 stock_symbol: this.acoesRecebidas.simbol,
                 stock_name: this.acoesRecebidas.name,
                 volume: parseFloat(quantidade.value),
-                price: parseFloat(valor.value),
+                price: parseFloat(valor.value.replace(/,/g, ".")),
                 type: 2,
                 status: 1,
               },

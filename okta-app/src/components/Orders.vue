@@ -298,19 +298,39 @@ export default {
                 this.acoes[key].askmin =
                   JSON.parse(tick.body).record.ask_min == null
                     ? 0
-                    : JSON.parse(tick.body).record.ask_min;
+                    : JSON.parse(tick.body).record.ask_min.toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      );
                 this.acoes[key].askmax =
                   JSON.parse(tick.body).record.ask_max == null
                     ? 0
-                    : JSON.parse(tick.body).record.ask_max;
+                    : JSON.parse(tick.body).record.ask_max.toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      );
                 this.acoes[key].bidmin =
                   JSON.parse(tick.body).record.bid_min == null
                     ? 0
-                    : JSON.parse(tick.body).record.bid_min;
+                    : JSON.parse(tick.body).record.bid_min.toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      );
                 this.acoes[key].bidmax =
                   JSON.parse(tick.body).record.bid_max == null
                     ? 0
-                    : JSON.parse(tick.body).record.bid_max;
+                    : JSON.parse(tick.body).record.bid_max.toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      );
               }
             }
             this.received_messages.push(JSON.parse(tick.body).content);
@@ -373,7 +393,7 @@ export default {
               stock_symbol: this.acoesRecebidas.simbol,
               stock_name: this.acoesRecebidas.name,
               volume: parseFloat(quantidade.value),
-              price: parseFloat(valor.value),
+              price: parseFloat(valor.value.replace(/,/g, ".")),
               type: 1,
               status: 1,
             },
@@ -442,19 +462,27 @@ export default {
               askmin:
                 response.data[key].ask_min == null
                   ? 0
-                  : response.data[key].ask_min,
+                  : response.data[key].ask_min.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    }),
               askmax:
                 response.data[key].ask_max == null
                   ? 0
-                  : response.data[key].ask_max,
+                  : response.data[key].ask_max.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    }),
               bidmin:
                 response.data[key].bid_min == null
                   ? 0
-                  : response.data[key].bid_min,
+                  : response.data[key].bid_min.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    }),
               bidmax:
                 response.data[key].bid_max == null
                   ? 0
-                  : response.data[key].bid_max,
+                  : response.data[key].bid_max.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    }),
             });
           }
         } catch (error) {

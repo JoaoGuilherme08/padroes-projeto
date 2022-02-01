@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+  database:
+    image: "postgres:latest"
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: solinftec
+      POSTGRES_DB: stockbanc
+    volumes:
+      - /var/lib/postgresql/data
+    restart: always
+  api:
+    image: "apiuers:v1"
+    ports:
+      - 8083:8083
+    environment:
+      DB_URL: jdbc:postgresql://database:5432/postgres
+    restart: always
+  apistocks:
+    image: "apistocks:v1"
+    ports:
+      - 8084:8084
+    environment:
+      DB_URL: jdbc:postgresql://database:5432/stockbanc
+    restart: always
+  # websocket:
+  #   image: "websocket:v1"
+  #   ports:
+  #     - 8085:8085
+  #   environment:
+  #     DB_URL: jdbc:postgresql://database:5432/postgres
+  #   restart: always

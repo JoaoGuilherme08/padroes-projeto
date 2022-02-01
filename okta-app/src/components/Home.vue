@@ -1,15 +1,9 @@
 <template>
-  <div id="home">
-    <h1>Okta Single-Page App Demo</h1>
-    <div v-if="!this.$root.authenticated">
-      <p>
-        How much caffeine has your developer had today?
-        <router-link role="button" to="/login">Log in to find out!</router-link>
-      </p>
-    </div>
-
+  <div id="home" style="margin-left: auto; margin-right: 10px; top: 20px">
+    <h1>Bem vindo ao Trade Actions</h1>
+    <div v-if="!this.$root.authenticated"></div>
     <div v-if="this.$root.authenticated">
-      <p>Welcome, {{ claims.name }}!</p>
+      <p>{{ claims.name }}!</p>
     </div>
   </div>
 </template>

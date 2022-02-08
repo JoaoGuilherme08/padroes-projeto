@@ -26,14 +26,14 @@ public class UserStockBalanceService implements iUserStockBalanceService {
 
     @Override
     public UserStockBalances finByUserAndStockOrder(UserOrders orders) {
-        if (userStockBalanceRepository.finByUserAndStock(orders.getId_user(), orders.getId_stock()) != null) {
-            return userStockBalanceRepository.finByUserAndStock(orders.getId_user(), orders.getId_stock());
+        if (userStockBalanceRepository.finByUserAndStock(orders.getidUser(), orders.getidStock()) != null) {
+            return userStockBalanceRepository.finByUserAndStock(orders.getidUser(), orders.getidStock());
         } else {
             UserStockBalances newBalance = new UserStockBalances();
-            newBalance.setId_stock(orders.getId_stock());
-            newBalance.setId_user(orders.getId_user());
-            newBalance.setStock_name(orders.getStock_name());
-            newBalance.setStock_symbol(orders.getStock_symbol());
+            newBalance.setidStock(orders.getidStock());
+            newBalance.setidUser(orders.getidUser());
+            newBalance.setstockName(orders.getstockName());
+            newBalance.setstockSymbol(orders.getstockSymbol());
             newBalance.setVolume(0);
             userStockBalanceRepository.save(newBalance);
 

@@ -19,15 +19,23 @@ public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "enabled", nullable = false)
     private boolean enabled = true;
+
+    @Column(name = "username")
     private String username;
-    private Double dollar_balance;
+
+    @Column(name = "dollar_balance")
+    private Double dollarBalance;
+
     @CreationTimestamp
-    @Column(updatable = false)
-    private Date created_on;
+    @Column(updatable = false, name = "created_on")
+    private Date createdOn;
+
     @UpdateTimestamp
-    private Date updated_on;
+    @Column(name = "updated_on")
+    private Date updatedOn;
 
     public Long getId() {
         return id;
@@ -45,12 +53,12 @@ public class Users {
         this.username = username;
     }
 
-    public Double getDollar_balance() {
-        return dollar_balance;
+    public Double getdollarBalance() {
+        return dollarBalance;
     }
 
-    public void setDollar_balance(Double dollar_balance) {
-        this.dollar_balance = dollar_balance;
+    public void setdollarBalance(Double dollarBalance) {
+        this.dollarBalance = dollarBalance;
     }
 
     public boolean isEnabled() {
@@ -61,20 +69,20 @@ public class Users {
         this.enabled = enabled;
     }
 
-    public Date getCreated_on() {
-        return created_on;
+    public Date getcreatedOn() {
+        return createdOn;
     }
 
-    public void setCreated_on(Date created_on) {
-        this.created_on = created_on;
+    public void setcreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
-    public Date getUpdated_on() {
-        return updated_on;
+    public Date getupdatedOn() {
+        return updatedOn;
     }
 
-    public void setUpdated_on(Date updated_on) {
-        this.updated_on = updated_on;
+    public void setupdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
 }

@@ -2,24 +2,30 @@ package com.solinftec.training.solinfbroker.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
+
 public class UserStockBalancesPKId implements Serializable {
-    private long id_user;
-    private long id_stock;
 
-    public long getId_user() {
-        return id_user;
+    @Column(name = "id_user")
+    private long idUser;
+
+    @Column(name = "id_stock")
+    private long idStock;
+
+    public long getidUser() {
+        return idUser;
     }
 
-    public void setId_user(long id_user) {
-        this.id_user = id_user;
+    public void setidUser(long idUser) {
+        this.idUser = idUser;
     }
 
-    public long getId_stock() {
-        return id_stock;
+    public long getidStock() {
+        return idStock;
     }
 
-    public void setId_stock(long id_stock) {
-        this.id_stock = id_stock;
+    public void setidStock(long idStock) {
+        this.idStock = idStock;
     }
 
 }

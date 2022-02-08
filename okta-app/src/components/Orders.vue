@@ -66,25 +66,25 @@
                   </th>
                   <th
                     scope="col"
-                    class="px-1 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    class="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
                     ask_min
                   </th>
                   <th
                     scope="col"
-                    class="px-1 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    class="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
                     ask_max
                   </th>
                   <th
                     scope="col"
-                    class="px-1 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    class="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
                     bid_min
                   </th>
                   <th
                     scope="col"
-                    class="px-1 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
+                    class="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
                     bid_max
                   </th>
@@ -107,25 +107,25 @@
                       </div>
                     </div>
                   </td>
-                  <td class="px-3 py-4 whitespace-nowrap">
+                  <td class="px-3 py-3 whitespace-nowrap mx-auto">
                     <div class="text-sm text-gray-900">{{ acao.name }}</div>
                   </td>
-                  <td class="px-10 py-4 whitespace-nowrap mx-auto">
+                  <td class="px-5 py-4 whitespace-nowrap mx-auto">
                     <div class="text-sm text-gray-500">
                       {{ acao.askmin }}
                     </div>
                   </td>
-                  <td class="px-10 py-4 whitespace-nowrap mx-auto">
+                  <td class="px-5 py-4 whitespace-nowrap mx-auto">
                     <div class="text-sm text-gray-500">
                       {{ acao.askmax }}
                     </div>
                   </td>
-                  <td class="px-10 py-4 whitespace-nowrap mx-auto">
+                  <td class="px-5 py-4 whitespace-nowrap mx-auto">
                     <div class="text-sm text-gray-500">
                       {{ acao.bidmin }}
                     </div>
                   </td>
-                  <td class="px-10 py-4 whitespace-nowrap mx-auto">
+                  <td class="px-5 py-4 whitespace-nowrap mx-auto">
                     <div class="text-sm text-gray-500">
                       {{ acao.bidmax }}
                     </div>

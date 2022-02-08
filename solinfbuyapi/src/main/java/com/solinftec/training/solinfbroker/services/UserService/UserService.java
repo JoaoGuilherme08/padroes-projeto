@@ -43,7 +43,7 @@ public class UserService implements IUserService {
             Users user = new Users();
             user.setUsername(email);
             user.setEnabled(true);
-            user.setDollar_balance(0.00);
+            user.setdollarBalance(0.00);
             return usersRepository.save(user);
         } else {
             return usersRepository.findUserExistente(email);

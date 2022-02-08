@@ -46,7 +46,6 @@ public class ScheduledPushMessagesOrders {
                                     notifications[i].getParameter());
                         }
                     }
-
                 } catch (SQLException sqle) {
                     sqle.printStackTrace();
                 }

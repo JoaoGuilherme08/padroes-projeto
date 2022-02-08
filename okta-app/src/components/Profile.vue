@@ -110,7 +110,7 @@
                       </span>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <div class="text-sm text-gray-500">
+                      <div class="text-xsfont-medium text-gray-900">
                         {{ person.dinheiro }}
                       </div>
                     </td>
@@ -138,8 +138,8 @@
               class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
             >
               <table class="min-w-full divide-y divide-gray-200">
-                <caption style="background-color: #b3e2ff">
-                  Ordens disponíveis para Venda
+                <caption>
+                  Ordens disponíveis para venda
                 </caption>
                 <thead class="bg-gray-50">
                   <tr style="background-color: #71fb75">
@@ -232,8 +232,8 @@
               class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg"
             >
               <table class="min-w-full divide-y divide-gray-200">
-                <caption style="background-color: #b3e2ff">
-                  Ordens de Compra e Venda
+                <caption>
+                  Ordens de compra e venda
                 </caption>
                 <thead class="bg-gray-50">
                   <tr style="background-color: #ff7059">
@@ -423,6 +423,7 @@ export default {
     Orders: [],
     mensagemErro: "",
     ocultaMsg: false,
+    iduserlogado: "",
     mensagemOk: "",
     ocultaMsgOk: false,
     ocultaOrder: false,
@@ -446,22 +447,28 @@ export default {
           this.stompClient.subscribe("/topic/pushorders", (tick) => {
             if (JSON.parse(tick.body).orders == true) {
               if (JSON.parse(tick.body).operation == "INSERT") {
-                this.Orders.push({
-                  id: JSON.parse(tick.body).record.id,
-                  id_stock: JSON.parse(tick.body).record.id_stock,
-                  name: JSON.parse(tick.body).record.stock_name,
-                  simbol: JSON.parse(tick.body).record.stock_symbol,
-                  preco: JSON.parse(tick.body).record.price.toLocaleString(
-                    "pt-BR",
-                    {
-                      minimumFractionDigits: 2,
-                    }
-                  ),
-                  quantidade: JSON.parse(tick.body).record.volume,
-                  type:
-                    JSON.parse(tick.body).record.type == 1 ? "COMPRA" : "VENDA",
-                  status: JSON.parse(tick.body).record.status,
-                });
+                if (
+                  this.infosUser.data.id == JSON.parse(tick.body).record.id_user
+                ) {
+                  this.Orders.push({
+                    id: JSON.parse(tick.body).record.id,
+                    id_stock: JSON.parse(tick.body).record.id_stock,
+                    name: JSON.parse(tick.body).record.stock_name,
+                    simbol: JSON.parse(tick.body).record.stock_symbol,
+                    preco: JSON.parse(tick.body).record.price.toLocaleString(
+                      "pt-BR",
+                      {
+                        minimumFractionDigits: 2,
+                      }
+                    ),
+                    quantidade: JSON.parse(tick.body).record.volume,
+                    type:
+                      JSON.parse(tick.body).record.type == 1
+                        ? "COMPRA"
+                        : "VENDA",
+                    status: JSON.parse(tick.body).record.status,
+                  });
+                }
               } else {
                 for (var key in this.Orders) {
                   if (this.Orders[key].id == JSON.parse(tick.body).record.id) {
@@ -506,20 +513,29 @@ export default {
                   volume: JSON.parse(tick.body).record.volume,
                 });
               } else {
-                for (var key1 in this.acoes) {
-                  if (
-                    this.acoes[key1].id == JSON.parse(tick.body).record.id_stock
-                  ) {
-                    this.acoes[key1].id = JSON.parse(tick.body).record.id_stock;
-                    this.acoes[key1].simbol = JSON.parse(
-                      tick.body
-                    ).record.stock_symbol;
-                    this.acoes[key1].name = JSON.parse(
-                      tick.body
-                    ).record.stock_name;
-                    this.acoes[key1].volume = JSON.parse(
-                      tick.body
-                    ).record.volume;
+                //MARCACAO
+                if (this.iduserlogado == JSON.parse(tick.body).record.id_user) {
+                  this.total = 0;
+                  for (var key1 in this.acoes) {
+                    if (
+                      this.acoes[key1].id ==
+                      JSON.parse(tick.body).record.id_stock
+                    ) {
+                      this.acoes[key1].id = JSON.parse(
+                        tick.body
+                      ).record.id_stock;
+                      this.acoes[key1].simbol = JSON.parse(
+                        tick.body
+                      ).record.stock_symbol;
+                      this.acoes[key1].name = JSON.parse(
+                        tick.body
+                      ).record.stock_name;
+                      this.acoes[key1].volume = JSON.parse(
+                        tick.body
+                      ).record.volume;
+                    }
+
+                    this.total += this.acoes[key1].volume;
                   }
                 }
               }
@@ -550,7 +566,7 @@ export default {
         );
 
         this.infosUser = response;
-
+        this.iduserlogado = response.data.id;
         this.people.push({
           name: this.claims.name,
           email: this.claims.email,

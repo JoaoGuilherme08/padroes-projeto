@@ -24,90 +24,128 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "user_orders")
 public class UserOrders {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private long id_user;
-    private long id_stock;
-    private String stock_symbol;
-    private String stock_name;
+    @Column(name = "id_user")
+    private long idUser;
+
+    @Column(name = "id_stock")
+    private long idStock;
+
+    @Column(name = "stock_symbol")
+    private String stockSymbol;
+
+    @Column(name = "stock_name")
+    private String stockName;
+
+    @Column(name = "volume")
     private long volume;
+
+    @Column(name = "price")
     private Double price;
+
+    @Column(name = "type")
     private int type;
+
+    @Column(name = "status")
     private int status;
+
     @CreationTimestamp
-    @Column(updatable = false)
-    private Date created_on;
+    @Column(updatable = false, name = "created_on")
+    private Date createdOn;
+
     @UpdateTimestamp
-    private Date updated_on;
-    
+    @Column(name = "updated_on")
+    private Date updatedOn;
+
     public long getId() {
         return id;
     }
+
     public void setId(long id) {
         this.id = id;
     }
-    public long getId_user() {
-        return id_user;
+
+    public long getidUser() {
+        return idUser;
     }
-    public void setId_user(long id_user) {
-        this.id_user = id_user;
+
+    public void setidUser(long idUser) {
+        this.idUser = idUser;
     }
-    public long getId_stock() {
-        return id_stock;
+
+    public long getidStock() {
+        return idStock;
     }
-    public void setId_stock(long id_stock) {
-        this.id_stock = id_stock;
+
+    public void setidStock(long idStock) {
+        this.idStock = idStock;
     }
-    public String getStock_symbol() {
-        return stock_symbol;
+
+    public String getstockSymbol() {
+        return stockSymbol;
     }
-    public void setStock_symbol(String stock_symbol) {
-        this.stock_symbol = stock_symbol;
+
+    public void setstockSymbol(String stockSymbol) {
+        this.stockSymbol = stockSymbol;
     }
-    public String getStock_name() {
-        return stock_name;
+
+    public String getstockName() {
+        return stockName;
     }
-    public void setStock_name(String stock_name) {
-        this.stock_name = stock_name;
+
+    public void setstockName(String stockName) {
+        this.stockName = stockName;
     }
+
     public long getVolume() {
         return volume;
     }
+
     public void setVolume(long volume) {
         this.volume = volume;
     }
+
     public Double getPrice() {
         return price;
     }
+
     public void setPrice(Double price) {
         this.price = price;
     }
+
     public int getType() {
         return type;
     }
+
     public void setType(int type) {
         this.type = type;
     }
+
     public int getStatus() {
         return status;
     }
+
     public void setStatus(int status) {
         this.status = status;
     }
-    public Date getCreated_on() {
-        return created_on;
-    }
-    public void setCreated_on(Date created_on) {
-        this.created_on = created_on;
-    }
-    public Date getUpdated_on() {
-        return updated_on;
-    }
-    public void setUpdated_on(Date updated_on) {
-        this.updated_on = updated_on;
+
+    public Date getcreatedOn() {
+        return createdOn;
     }
 
-    
+    public void setcreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
+    }
+
+    public Date getupdatedOn() {
+        return updatedOn;
+    }
+
+    public void setupdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
+    }
+
 }

@@ -60,7 +60,7 @@ public class UsuarioController {
                 .map(usuario -> {
                     usuario.setUsername(newUsers.getUsername());
                     usuario.setEnabled(newUsers.isEnabled());
-                    usuario.setUpdated_on(Date.from(Instant.now()));
+                    usuario.setupdatedOn(Date.from(Instant.now()));
                     return usersRepository.save(usuario);
 
                 }).orElseGet(() -> {

@@ -1,13 +1,9 @@
 package com.stockapi.training.controller;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
-
 import com.stockapi.training.model.Stock;
-import com.stockapi.training.repository.StockRepository;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.stockapi.training.services.istockservice;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,35 +18,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/stock")
 public class StockController {
 
-    @Autowired
-    private StockRepository stockRepository;
+    istockservice istockservice;
+
+    public StockController(com.stockapi.training.services.istockservice istockservice) {
+        super();
+        this.istockservice = istockservice;
+    }
 
     @GetMapping
     public List<Stock> Listar() {
-        return stockRepository.findAllStocks();
+        return istockservice.Listar();
     }
 
     @PostMapping
     public Stock adicionar(@RequestBody Stock stock) {
-        return stockRepository.save(stock);
+        return istockservice.salvarPost(stock);
     }
 
     @PutMapping("/{id}")
-    public Stock replaceStock(@RequestBody Stock newStock, @PathVariable Long id) {
-
-        return stockRepository.findById(id)
-                .map(stock -> {
-                    stock.setAsk_min(newStock.getAsk_min());
-                    stock.setAsk_max(newStock.getAsk_max());
-                    stock.setBid_max(newStock.getBid_max());
-                    stock.setBid_min(newStock.getBid_min());
-                    stock.setUpdated_on(Date.from(Instant.now()));
-                    return stockRepository.save(stock);
-
-                }).orElseGet(() -> {
-                    newStock.setId(id);
-                    return stockRepository.save(newStock);
-                });
+    public ResponseEntity<?> replaceStock(@RequestBody Stock newStock, @PathVariable Long id) {
+        return istockservice.salvarAcao(newStock, id);
     }
-
 }

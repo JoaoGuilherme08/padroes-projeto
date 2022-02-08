@@ -14,7 +14,6 @@ public class PGConnStocks {
 
                 String url = "jdbc:postgresql://localhost:5432/stockbanc?user=postgres&password=solinftec&ssl=false";
                 conn = DriverManager.getConnection(url);
-
             }
         } catch (SQLException ex) {
             ex.printStackTrace();

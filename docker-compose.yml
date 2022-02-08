@@ -13,23 +13,20 @@ services:
       - /var/lib/postgresql/data
     restart: always
   api:
-    image: "apiuers:v1"
+    image: "joaocobo20/tradeactions:apiusers"
     ports:
       - 8083:8083
     environment:
       DB_URL: jdbc:postgresql://database:5432/postgres
     restart: always
   apistocks:
-    image: "apistocks:v1"
+    image: "joaocobo20/tradeactions:apistocks"
     ports:
       - 8084:8084
     environment:
       DB_URL: jdbc:postgresql://database:5432/stockbanc
     restart: always
-  # websocket:
-  #   image: "websocket:v1"
+  # front:
+  #   image: "joaocobo20/tradeactions:okta-app"
   #   ports:
-  #     - 8085:8085
-  #   environment:
-  #     DB_URL: jdbc:postgresql://database:5432/postgres
-  #   restart: always
+  #     - 8080:80

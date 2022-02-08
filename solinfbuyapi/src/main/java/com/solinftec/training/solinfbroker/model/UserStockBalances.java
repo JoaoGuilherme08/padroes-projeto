@@ -2,6 +2,7 @@ package com.solinftec.training.solinfbroker.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -14,48 +15,62 @@ import org.hibernate.annotations.UpdateTimestamp;
 @IdClass(UserStockBalancesPKId.class)
 @Table(name = "user_stock_balances")
 public class UserStockBalances {
+
     @Id
-    private long id_user;
+    @Column(name = "id_user")
+    private long idUser;
+
     @Id
-    private long id_stock;
-    private String stock_symbol;
-    private String stock_name;
+    @Column(name = "id_stock")
+    private long idStock;
+
+    @Column(name = "stock_symbol")
+    private String stockSymbol;
+
+    @Column(name = "stock_name")
+    private String stockName;
+
+    @Column(name = "volume")
     private long volume;
+
     @CreationTimestamp
-    private Date created_on;
+    @Column(name = "created_on")
+    private Date createdOn;
+
+    @Column(name = "updated_on")
     @UpdateTimestamp
-    private Date updated_on;
+    private Date updatedOn;
 
-    public long getId_user() {
-        return id_user;
+    public long getidUser() {
+        return idUser;
     }
 
-    public void setId_user(long id_user) {
-        this.id_user = id_user;
+    public void setidUser(long idUser) {
+        this.idUser = idUser;
     }
 
-    public long getId_stock() {
-        return id_stock;
+    public long getidStock() {
+        return idStock;
     }
 
-    public void setId_stock(long id_stock) {
-        this.id_stock = id_stock;
+    public void setidStock(long idStock) {
+        this.idStock = idStock;
     }
 
-    public String getStock_symbol() {
-        return stock_symbol;
+    public String getstockSymbol() {
+        return stockSymbol;
     }
 
-    public void setStock_symbol(String stock_symbol) {
-        this.stock_symbol = stock_symbol;
+    public void setstockSymbol(String stockSymbol) {
+        this.stockSymbol = stockSymbol;
     }
 
-    public String getStock_name() {
-        return stock_name;
+    public String getstockName() {
+        return stockName;
     }
 
-    public void setStock_name(String stock_name) {
-        this.stock_name = stock_name;
+    public void setstockName(String stockName) {
+        this.stockName = stockName;
     }
 
     public long getVolume() {
@@ -66,20 +81,20 @@ public class UserStockBalances {
         this.volume = volume;
     }
 
-    public Date getCreated_on() {
-        return created_on;
+    public Date getcreatedOn() {
+        return createdOn;
     }
 
-    public void setCreated_on(Date created_on) {
-        this.created_on = created_on;
+    public void setcreatedOn(Date createdOn) {
+        this.createdOn = createdOn;
     }
 
-    public Date getUpdated_on() {
-        return updated_on;
+    public Date getupdatedOn() {
+        return updatedOn;
     }
 
-    public void setUpdated_on(Date updated_on) {
-        this.updated_on = updated_on;
+    public void setupdatedOn(Date updatedOn) {
+        this.updatedOn = updatedOn;
     }
 
 }

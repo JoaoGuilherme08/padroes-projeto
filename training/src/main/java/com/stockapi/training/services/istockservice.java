@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 public interface istockservice {
     ResponseEntity<?> salvarAcao(Stock stock, long Id);
 
-    List<Stock> Listar();
+    List<Stock> listar();
 
     Stock salvarPost(Stock stock);
 }

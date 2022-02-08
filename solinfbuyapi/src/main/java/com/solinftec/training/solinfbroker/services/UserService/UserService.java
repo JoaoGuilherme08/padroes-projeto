@@ -1,5 +1,8 @@
 package com.solinftec.training.solinfbroker.services.UserService;
 
+import java.time.Instant;
+import java.util.Date;
+
 import com.solinftec.training.solinfbroker.model.Users;
 import com.solinftec.training.solinfbroker.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,4 +53,18 @@ public class UserService implements IUserService {
         }
     }
 
+    @Override
+    public ResponseEntity<?> alterarUsers(Users newUsers, long idUser) {
+        return usersRepository.findById(idUser)
+                .map(usuario -> {
+                    usuario.setUsername(newUsers.getUsername());
+                    usuario.setEnabled(newUsers.isEnabled());
+                    usuario.setupdatedOn(Date.from(Instant.now()));
+                    return ResponseEntity.ok().body(usersRepository.save(usuario));
+
+                }).orElseGet(() -> {
+                    newUsers.setId(idUser);
+                    return ResponseEntity.ok().body(usersRepository.save(newUsers));
+                });
+    }
 }

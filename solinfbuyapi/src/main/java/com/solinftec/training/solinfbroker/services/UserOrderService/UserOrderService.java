@@ -128,10 +128,10 @@ public class UserOrderService implements IUserOrderService {
                         && userOrderRepository.findId(orderRecebida.getId()).getVolume() > 0) {
 
                     order = userOrderRepository.findId(order.getId());
-                    user = userService.Listar(order.getidUser());
+                    user = userService.listar(order.getidUser());
 
                     orderRecebida = userOrderRepository.findId(orderRecebida.getId());
-                    order_user = userService.Listar(orderRecebida.getidUser());
+                    order_user = userService.listar(orderRecebida.getidUser());
 
                     if (orderRecebida.getType() == 1 ? order_user.getdollarBalance() >= order.getPrice()
                             : user.getdollarBalance() >= orderRecebida.getPrice()) {

@@ -27,11 +27,11 @@ public class stockservice implements istockservice {
 
         stockRepository.findById(id)
                 .map(stock -> {
-                    stock.setAsk_min(newStock.getAsk_min());
-                    stock.setAsk_max(newStock.getAsk_max());
-                    stock.setBid_max(newStock.getBid_max());
-                    stock.setBid_min(newStock.getBid_min());
-                    stock.setUpdated_on(Date.from(Instant.now()));
+                    stock.setAskMin(newStock.getAskMin());
+                    stock.setAskMax(newStock.getAskMax());
+                    stock.setBidMax(newStock.getBidMax());
+                    stock.setBidMin(newStock.getBidMin());
+                    stock.setUpdatedOn(Date.from(Instant.now()));
                     return ResponseEntity.ok().body(stockRepository.save(stock));
                 }).orElseGet(() -> {
                     newStock.setId(id);
@@ -41,7 +41,7 @@ public class stockservice implements istockservice {
     }
 
     @Override
-    public List<Stock> Listar() {
+    public List<Stock> listar() {
         return stockRepository.findAllStocks();
     }
 

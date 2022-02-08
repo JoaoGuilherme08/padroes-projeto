@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 public interface IUserService {
     ResponseEntity<?> save(Users users);
 
-    Users Listar(long id);
+    Users listar(long id);
 
-    Users ListarEmail(String email);
+    Users listarEmail(String email);
+
+    ResponseEntity<?> alterarUsers(Users users, long idUser);
 }

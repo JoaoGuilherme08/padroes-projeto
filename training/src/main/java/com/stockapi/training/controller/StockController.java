@@ -27,7 +27,7 @@ public class StockController {
 
     @GetMapping
     public List<Stock> Listar() {
-        return istockservice.Listar();
+        return istockservice.listar();
     }
 
     @PostMapping

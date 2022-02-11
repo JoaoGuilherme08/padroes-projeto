@@ -31,7 +31,7 @@ public class UserOrderService implements IUserOrderService {
 
     Users user;
 
-    Users order_user;
+    Users orderUser;
 
     public UserOrderService(IUserService userService, UserOrderRepository userOrderRepository,
             iUserStockBalanceService iUserStockBalanceService) {
@@ -67,7 +67,7 @@ public class UserOrderService implements IUserOrderService {
 
         UriComponents uri = UriComponentsBuilder.newInstance()
                 .scheme("http")
-                .host("localhost:8084")
+                .host("172.17.0.1:8084")
                 .path("stock/{id}")
                 .build();
 
@@ -80,13 +80,13 @@ public class UserOrderService implements IUserOrderService {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("id", userOrders.getidStock());
-        jsonObject.put("ask_min",
+        jsonObject.put("askMin",
                 venda.getMinPriceVenda(userOrders.getPrice(), userOrders.getidStock(), userOrderRepository));
-        jsonObject.put("ask_max",
+        jsonObject.put("askMax",
                 venda.getMaxPriceVenda(userOrders.getPrice(), userOrders.getidStock(), userOrderRepository));
-        jsonObject.put("bid_min",
+        jsonObject.put("bidMin",
                 compra.getMinPriceCompra(userOrders.getPrice(), userOrders.getidStock(), userOrderRepository));
-        jsonObject.put("bid_max",
+        jsonObject.put("bidMax",
                 compra.getMaxPriceCompra(userOrders.getPrice(), userOrders.getidStock(), userOrderRepository));
 
         HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
@@ -131,20 +131,20 @@ public class UserOrderService implements IUserOrderService {
                     user = userService.listar(order.getidUser());
 
                     orderRecebida = userOrderRepository.findId(orderRecebida.getId());
-                    order_user = userService.listar(orderRecebida.getidUser());
+                    orderUser = userService.listar(orderRecebida.getidUser());
 
-                    if (orderRecebida.getType() == 1 ? order_user.getdollarBalance() >= order.getPrice()
+                    if (orderRecebida.getType() == 1 ? orderUser.getdollarBalance() >= order.getPrice()
                             : user.getdollarBalance() >= orderRecebida.getPrice()) {
 
                         orderRecebida.setVolume(orderRecebida.getVolume() - 1);
                         order.setVolume(order.getVolume() - 1);
 
                         if (orderRecebida.getType() == 1) {
-                            order_user.setdollarBalance(order_user.getdollarBalance() - order.getPrice());
+                            orderUser.setdollarBalance(orderUser.getdollarBalance() - order.getPrice());
                             user.setdollarBalance(user.getdollarBalance() + order.getPrice());
                             atualiza(orderRecebida);
                         } else {
-                            order_user.setdollarBalance(order_user.getdollarBalance() + orderRecebida.getPrice());
+                            orderUser.setdollarBalance(orderUser.getdollarBalance() + orderRecebida.getPrice());
                             user.setdollarBalance(user.getdollarBalance() - orderRecebida.getPrice());
                             atualiza(order);
                         }
@@ -160,7 +160,7 @@ public class UserOrderService implements IUserOrderService {
                         userOrderRepository.save(order);
                         userOrderRepository.save(orderRecebida);
                         userService.save(user);
-                        userService.save(order_user);
+                        userService.save(orderUser);
 
                     } else {
                         break;

@@ -97,7 +97,7 @@
                           />
                         </svg>
                       </span>
-                      Compra e Venda
+                      Compra de ações
                     </a>
                   </li>
                   <li
@@ -260,7 +260,7 @@
                     />
                   </svg>
                 </span>
-                Compra e Venda
+                Compra de ações
               </a>
               <a
                 v-if="authenticated"

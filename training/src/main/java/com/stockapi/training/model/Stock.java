@@ -20,7 +20,7 @@ public class Stock {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "maket_cap")
+    @Column(name = "market_cap")
     private Long marketCap;
 
     @Column(name = "stock_symbol")

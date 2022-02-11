@@ -452,7 +452,7 @@ export default {
                 ) {
                   this.Orders.push({
                     id: JSON.parse(tick.body).record.id,
-                    id_stock: JSON.parse(tick.body).record.id_stock,
+                    idStock: JSON.parse(tick.body).record.id_stock,
                     name: JSON.parse(tick.body).record.stock_name,
                     simbol: JSON.parse(tick.body).record.stock_symbol,
                     preco: JSON.parse(tick.body).record.price.toLocaleString(
@@ -473,7 +473,7 @@ export default {
                 for (var key in this.Orders) {
                   if (this.Orders[key].id == JSON.parse(tick.body).record.id) {
                     this.Orders[key].id = JSON.parse(tick.body).record.id;
-                    this.Orders[key].id_stock = JSON.parse(
+                    this.Orders[key].idStock = JSON.parse(
                       tick.body
                     ).record.id_stock;
                     this.Orders[key].name = JSON.parse(
@@ -571,7 +571,7 @@ export default {
           name: this.claims.name,
           email: this.claims.email,
           pais: this.claims.locale,
-          dinheiro: "R$ " + response.data.dollar_balance.toFixed(2),
+          dinheiro: "R$ " + response.data.dollarBalance.toFixed(2),
         });
       }
     },
@@ -589,15 +589,15 @@ export default {
               this.ocultaOrder = true;
               this.Orders.push({
                 id: response.data[key].id,
-                id_stock: response.data[key].id_stock,
-                simbol: response.data[key].stock_symbol,
+                idStock: response.data[key].idStock,
+                simbol: response.data[key].stockSymbol,
                 preco: response.data[key].price.toLocaleString("pt-BR", {
                   minimumFractionDigits: 2,
                 }),
                 type: response.data[key].type == 1 ? "COMPRA" : "VENDA",
                 quantidade: response.data[key].volume,
                 status: response.data[key].status,
-                name: response.data[key].stock_name,
+                name: response.data[key].stockName,
               });
             }
           }
@@ -618,9 +618,9 @@ export default {
           );
           for (var key in response.data) {
             this.acoes.push({
-              id: response.data[key][0].id_stock,
-              simbol: response.data[key][0].stock_symbol,
-              name: response.data[key][0].stock_name,
+              id: response.data[key][0].idStock,
+              simbol: response.data[key][0].stockSymbol,
+              name: response.data[key][0].stockName,
               volume: response.data[key][0].volume,
             });
             this.total += parseInt(response.data[key][0].volume, 10);
@@ -714,10 +714,10 @@ export default {
             let response = await axios.post(
               `http://localhost:8083/userorder`,
               {
-                id_user: this.infosUser.data.id,
-                id_stock: this.acoesRecebidas.id,
-                stock_symbol: this.acoesRecebidas.simbol,
-                stock_name: this.acoesRecebidas.name,
+                idUser: this.infosUser.data.id,
+                idStock: this.acoesRecebidas.id,
+                stockSymbol: this.acoesRecebidas.simbol,
+                stockName: this.acoesRecebidas.name,
                 volume: parseFloat(quantidade.value),
                 price: parseFloat(valor.value.replace(/,/g, ".")),
                 type: 2,

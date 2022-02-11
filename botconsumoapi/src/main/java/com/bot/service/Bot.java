@@ -56,13 +56,13 @@ public class Bot {
                             stock_name = eElement.getElementsByTagName("name").item(0).getTextContent();
                             stock_symbol = eElement.getElementsByTagName("simbol").item(0).getTextContent();
 
-                            json.put("id_user", id_user);
-                            json.put("id_stock", id_stock);
+                            json.put("idUser", id_user);
+                            json.put("idStock", id_stock);
                             json.put("volume", volume);
                             json.put("price", price);
                             json.put("type", type);
-                            json.put("stock_name", stock_name);
-                            json.put("stock_symbol", stock_symbol);
+                            json.put("stockName", stock_name);
+                            json.put("stockSymbol", stock_symbol);
                             json.put("status", 1);
 
                             // System.out.print(json);
@@ -74,7 +74,7 @@ public class Bot {
                                 request.addHeader("Content-Type", "application/json");
                                 request.addHeader("Authorization", token);
                                 request.setEntity(params);
-                                httpClient.execute(request);
+                                System.out.print(httpClient.execute(request));
                             } catch (Exception ex) {
                                 System.out.println(ex);
                             } finally {

@@ -35,13 +35,13 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public Users Listar(long id) {
+    public Users listar(long id) {
 
         return usersRepository.findId(id);
     }
 
     @Override
-    public Users ListarEmail(String email) {
+    public Users listarEmail(String email) {
         if (usersRepository.findUserExistente(email) == null) {
             Users user = new Users();
             user.setUsername(email);

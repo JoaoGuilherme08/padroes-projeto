@@ -68,25 +68,25 @@
                     scope="col"
                     class="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
-                    ask_min
+                    askMin
                   </th>
                   <th
                     scope="col"
                     class="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
-                    ask_max
+                    askMax
                   </th>
                   <th
                     scope="col"
                     class="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
-                    bid_min
+                    bidMin
                   </th>
                   <th
                     scope="col"
                     class="px-3 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider"
                   >
-                    bid_max
+                    bidMax
                   </th>
                   <th></th>
                   <th></th>
@@ -388,10 +388,10 @@ export default {
           let response = await axios.post(
             `http://localhost:8083/userorder`,
             {
-              id_user: this.infosUser.data.id,
-              id_stock: this.acoesRecebidas.id,
-              stock_symbol: this.acoesRecebidas.simbol,
-              stock_name: this.acoesRecebidas.name,
+              idUser: this.infosUser.data.id,
+              idStock: this.acoesRecebidas.id,
+              stockSymbol: this.acoesRecebidas.simbol,
+              stockName: this.acoesRecebidas.name,
               volume: parseFloat(quantidade.value),
               price: parseFloat(valor.value.replace(/,/g, ".")),
               type: 1,
@@ -407,7 +407,7 @@ export default {
           if (response.status == 200) {
             this.ocultaMsgOk = true;
             this.alertMensagemOk(
-              "Venda feita com sucesso, verifique as Orders."
+              "Pedido de compra feito com sucesso, verifique seu perfil."
             );
             setTimeout(this.ocultaMensagem, 3000);
             let modal = document.getElementById("modal");
@@ -457,30 +457,30 @@ export default {
           for (var key in response.data) {
             this.acoes.push({
               id: response.data[key].id,
-              simbol: response.data[key].stock_symbol,
-              name: response.data[key].stock_name,
+              simbol: response.data[key].stockSymbol,
+              name: response.data[key].stockName,
               askmin:
-                response.data[key].ask_min == null
-                  ? 0
-                  : response.data[key].ask_min.toLocaleString("pt-BR", {
+                response.data[key].askMin == null
+                  ? "0,00"
+                  : response.data[key].askMin.toLocaleString("pt-BR", {
                       minimumFractionDigits: 2,
                     }),
               askmax:
-                response.data[key].ask_max == null
-                  ? 0
-                  : response.data[key].ask_max.toLocaleString("pt-BR", {
+                response.data[key].askMax == null
+                  ? "0,00"
+                  : response.data[key].askMax.toLocaleString("pt-BR", {
                       minimumFractionDigits: 2,
                     }),
               bidmin:
-                response.data[key].bid_min == null
-                  ? 0
-                  : response.data[key].bid_min.toLocaleString("pt-BR", {
+                response.data[key].bidMin == null
+                  ? "0,00"
+                  : response.data[key].bidMin.toLocaleString("pt-BR", {
                       minimumFractionDigits: 2,
                     }),
               bidmax:
-                response.data[key].bid_max == null
-                  ? 0
-                  : response.data[key].bid_max.toLocaleString("pt-BR", {
+                response.data[key].bidMax == null
+                  ? "0,00"
+                  : response.data[key].bidMax.toLocaleString("pt-BR", {
                       minimumFractionDigits: 2,
                     }),
             });

@@ -67,7 +67,7 @@ public class UserOrderService implements IUserOrderService {
 
         UriComponents uri = UriComponentsBuilder.newInstance()
                 .scheme("http")
-                .host("172.17.0.1:8084")
+                .host("localhost:8084")
                 .path("stock/{id}")
                 .build();
 

@@ -436,7 +436,7 @@ export default {
   },
   methods: {
     connect() {
-      this.socket = new SockJS("http://localhost:8085/profile");
+      this.socket = new SockJS("http://172.17.0.1:8085/profile");
       this.stompClient = Stomp.over(this.socket);
       let accessToken = this.$auth.getAccessToken();
       this.stompClient.connect(

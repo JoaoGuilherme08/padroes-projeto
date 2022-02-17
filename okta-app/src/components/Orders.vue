@@ -90,6 +90,7 @@
                   </th>
                   <th></th>
                   <th></th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody
@@ -136,6 +137,14 @@
                       @click="modalHandler(true, acao)"
                     >
                       COMPRAR
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      class="bg-blue-500 hover:bg-blue-700 text-white font-bold text-sm py-1 px-2 rounded-full"
+                      @click="modalGrafico(true, acao)"
+                    >
+                      GRAFICO
                     </button>
                   </td>
                 </tr>
@@ -241,6 +250,51 @@
         </div>
       </div>
     </div>
+    <div
+      class="py-12 transition ease-in-out z-10 absolute top-0 right-0 bottom-0 left-0"
+      id="modalGrafico"
+      v-if="showModalGrafico"
+    >
+      <div role="alert" class="container mx-auto w-11/12 md:w-2/3 max-w-lg">
+        <div
+          class="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400"
+          style="width: 782.5px; left: auto; right: 150px"
+        >
+          <h1>{{ graficoNameAcao }}</h1>
+          <div id="chart">
+            <apexchart
+              type="candlestick"
+              height="350"
+              :options="chartOptions"
+              :series="series"
+            ></apexchart>
+          </div>
+
+          <div
+            class="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out"
+            @click="modalGrafico(false)"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              aria-label="Close"
+              class="icon icon-tabler icon-tabler-x"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              stroke-width="2.5"
+              stroke="currentColor"
+              fill="none"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path stroke="none" d="M0 0h24v24H0z" />
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
   </nav>
 </template>
 
@@ -263,6 +317,27 @@ export default {
     send_message: null,
     objetoMsg: [],
     connected: false,
+    showModalGrafico: false,
+    graficoNameAcao: "",
+    series: [],
+    chartOptions: {
+      chart: {
+        type: "candlestick",
+        height: 450,
+      },
+      title: {
+        text: "Grafico de alterações Ask_Min",
+        align: "left",
+      },
+      xaxis: {
+        type: "datetime",
+      },
+      yaxis: {
+        tooltip: {
+          enabled: true,
+        },
+      },
+    },
   }),
   created() {
     this.BuscaCarteira();
@@ -279,7 +354,7 @@ export default {
       }
     },
     connect() {
-      this.socket = new SockJS("http://localhost:8085/profile");
+      this.socket = new SockJS("http://172.17.0.1:8085/profile");
       this.stompClient = Stomp.over(this.socket);
       let accessToken = this.$auth.getAccessToken();
       this.stompClient.connect(
@@ -489,6 +564,47 @@ export default {
           this.acoes = `${error}`;
         }
       }
+    },
+    async buscarGrafico(id) {
+      if (this.$root.authenticated) {
+        this.claims = await this.$auth.getUser();
+        let accessToken = this.$auth.getAccessToken();
+        try {
+          let response = await axios.get(
+            `http://localhost:8084/stockhistorico/${id}`,
+            {
+              headers: { Authorization: "Bearer " + accessToken },
+            }
+          );
+          if (response.data != null) {
+            var data = new Object();
+            var array = new Array();
+
+            for (var key in response.data) {
+              var array1 = new Array(
+                new Date(response.data[key].minuto),
+                response.data[key].abertura,
+                response.data[key].maximo,
+                response.data[key].minimo,
+                response.data[key].fechamento
+              );
+              array.push(array1);
+            }
+
+            data.data = array;
+            this.series.push(data);
+            console.log(this.series);
+          }
+        } catch (error) {
+          this.acoes = `${error}`;
+        }
+      }
+    },
+    modalGrafico(value, acao) {
+      this.showModalGrafico = value;
+      this.graficoNameAcao = acao.name;
+      this.series = [];
+      this.buscarGrafico(acao.id);
     },
     modalHandler(val, acao) {
       this.acoesRecebidas = acao;

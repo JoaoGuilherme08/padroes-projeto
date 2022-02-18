@@ -19,6 +19,9 @@ public class StockHistorico {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "id_stock")
+    private Long idStock;
+
     @Column(name = "ask_min")
     private Double askMin;
 
@@ -41,6 +44,14 @@ public class StockHistorico {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getIdStock() {
+        return idStock;
+    }
+
+    public void setIdStock(Long idStock) {
+        this.idStock = idStock;
     }
 
     public Double getAskMin() {

@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.OptimisticLockException;
+
+import com.nimbusds.oauth2.sdk.Response;
 import com.solinftec.training.solinfbroker.bean.compra;
 import com.solinftec.training.solinfbroker.bean.venda;
 import com.solinftec.training.solinfbroker.model.UserOrders;
@@ -34,15 +37,17 @@ public class UserOrderService implements IUserOrderService {
     Users orderUser;
 
     public UserOrderService(IUserService userService, UserOrderRepository userOrderRepository,
-            iUserStockBalanceService iUserStockBalanceService) {
+            iUserStockBalanceService iUserStockBalanceService, BuscaListaorder buscaListaorder) {
         super();
         this.userService = userService;
         this.userOrderRepository = userOrderRepository;
         this.iUserStockBalanceService = iUserStockBalanceService;
+        this.buscaListaorder = buscaListaorder;
     }
 
     IUserService userService;
     iUserStockBalanceService iUserStockBalanceService;
+    BuscaListaorder buscaListaorder;
 
     @Autowired
     private UserOrderRepository userOrderRepository;
@@ -50,16 +55,21 @@ public class UserOrderService implements IUserOrderService {
     @Override
     public ResponseEntity<?> save(UserOrders userOrders, String userToken) {
 
-        if (userOrders.getType() == 2 && validaBalance(userOrders)) { // venda
+        if (userOrders.getType() == 2 && validaBalance(userOrders)) {
             userOrderRepository.save(userOrders);
             atualiza(userOrders);
             remove(userOrders);
-        } else if (userOrders.getType() == 1) {// compra
+        } else if (userOrders.getType() == 1) {
             userOrderRepository.save(userOrders);
             remove(userOrders);
         }
 
-        // region Comunicação API Stock
+        atualizaApiStocks(userOrders, userToken);
+
+        return ResponseEntity.ok().body(userOrders);
+    }
+
+    private ResponseEntity<?> atualizaApiStocks(UserOrders userOrders, String token) {
         var venda = new venda();
         var compra = new compra();
 
@@ -67,15 +77,15 @@ public class UserOrderService implements IUserOrderService {
 
         UriComponents uri = UriComponentsBuilder.newInstance()
                 .scheme("http")
-                .host("localhost:8084")
+                .host("172.17.0.1:8084")
                 .path("stock/{id}")
                 .build();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("Authorization", userToken);
+        headers.add("Authorization", token);
 
-        Map<String, Long> param = new HashMap<String, Long>();
+        Map<String, Long> param = new HashMap<>();
         param.put("id", userOrders.getidStock());
 
         JSONObject jsonObject = new JSONObject();
@@ -89,17 +99,13 @@ public class UserOrderService implements IUserOrderService {
         jsonObject.put("bidMax",
                 compra.getMaxPriceCompra(userOrders.getPrice(), userOrders.getidStock(), userOrderRepository));
 
-        HttpEntity<String> request = new HttpEntity<String>(jsonObject.toString(), headers);
+        HttpEntity<String> request = new HttpEntity<>(jsonObject.toString(), headers);
 
-        template.exchange(uri.toString(), HttpMethod.PUT, request, String.class, param);
-
-        // endregion
-
-        return ResponseEntity.ok().body(userOrders);
+        return template.exchange(uri.toString(), HttpMethod.PUT, request, String.class, param);
     }
 
     private void atualiza(UserOrders userOrders) {
-        long SaldoAtualUser = iUserStockBalanceService
+        long saldoAtualUser = iUserStockBalanceService
                 .finByUserAndStockOrder(userOrders).getVolume();
 
         UserStockBalances stocks = iUserStockBalanceService
@@ -107,67 +113,135 @@ public class UserOrderService implements IUserOrderService {
 
         if (userOrders.getType() == 2) {
             iUserStockBalanceService.updateStockUser(userOrders.getidUser(), userOrders.getidStock(),
-                    SaldoAtualUser - userOrders.getVolume());
+                    saldoAtualUser - userOrders.getVolume());
         } else {
             stocks.setVolume(stocks.getVolume() + 1);
             iUserStockBalanceService.save(stocks);
         }
     }
 
+    public boolean validaBalance(UserOrders userOrders) {
+
+        return iUserStockBalanceService.finByUserAndStock(userOrders.getidUser(), userOrders.getidStock())
+                .getVolume() >= userOrders.getVolume();
+    }
+
+    /*
+     * // private ResponseEntity<?> remove(UserOrders orderRecebida) {
+     * 
+     * // List<UserOrders> ordersList =
+     * // userOrderRepository.findByTypeAndStockAndId(orderRecebida.getType() == 1 ?
+     * 2
+     * // : 1,
+     * // orderRecebida.getidStock(), orderRecebida.getidUser());
+     * 
+     * // for (UserOrders order : ordersList) {
+     * 
+     * // if (orderRecebida.getType() == 1 ? order.getPrice() <=
+     * // orderRecebida.getPrice()
+     * // : order.getPrice() >= orderRecebida.getPrice()) {
+     * 
+     * // while (userOrderRepository.findId(order.getId()).getVolume() > 0
+     * // && userOrderRepository.findId(orderRecebida.getId()).getVolume() > 0) {
+     * 
+     * // order = userOrderRepository.findId(order.getId());
+     * // user = userService.listar(order.getidUser());
+     * 
+     * // orderRecebida = userOrderRepository.findId(orderRecebida.getId());
+     * // orderUser = userService.listar(orderRecebida.getidUser());
+     * 
+     * // if (orderRecebida.getType() == 1 ? orderUser.getdollarBalance() >=
+     * // order.getPrice()
+     * // : user.getdollarBalance() >= orderRecebida.getPrice()) {
+     * 
+     * // orderRecebida.setVolume(orderRecebida.getVolume() - 1);
+     * // order.setVolume(order.getVolume() - 1);
+     * 
+     * // if (orderRecebida.getType() == 1) {
+     * // orderUser.setdollarBalance(orderUser.getdollarBalance() -
+     * order.getPrice());
+     * // user.setdollarBalance(user.getdollarBalance() + order.getPrice());
+     * // atualiza(orderRecebida);
+     * // } else {
+     * // orderUser.setdollarBalance(orderUser.getdollarBalance() +
+     * // orderRecebida.getPrice());
+     * // user.setdollarBalance(user.getdollarBalance() - orderRecebida.getPrice());
+     * // atualiza(order);
+     * // }
+     * 
+     * // if (order.getVolume() == 0) {
+     * // order.setStatus(2);
+     * // }
+     * 
+     * // if (orderRecebida.getVolume() == 0) {
+     * // orderRecebida.setStatus(2);
+     * // }
+     * 
+     * // userOrderRepository.save(order);
+     * // userOrderRepository.save(orderRecebida);
+     * // userService.save(user);
+     * // userService.save(orderUser);
+     * 
+     * // } else {
+     * // break;
+     * // }
+     * 
+     * // }
+     * // }
+     * // }
+     * // return ResponseEntity.ok().body(orderRecebida);
+     * // }
+     */
+
     private ResponseEntity<?> remove(UserOrders orderRecebida) {
 
-        List<UserOrders> ordersList = userOrderRepository.findByTypeAndStockNotId(orderRecebida.getType() == 1 ? 2 : 1,
-                orderRecebida.getidStock(), orderRecebida.getidUser());
+        for (UserOrders order : buscaListaorder.shareInverseOrder(orderRecebida)) {
+            while (userOrderRepository.findId(order.getId()).getVolume() > 0
+                    && userOrderRepository.findId(orderRecebida.getId()).getVolume() > 0) {
 
-        for (UserOrders order : ordersList) {
+                user = userService.listar(order.getidUser());
+                orderUser = userService.listar(orderRecebida.getidUser());
 
-            if (orderRecebida.getType() == 1 ? order.getPrice() <= orderRecebida.getPrice()
-                    : order.getPrice() >= orderRecebida.getPrice()) {
+                if (orderRecebida.getType() == 1 ? orderUser.getdollarBalance() >= order.getPrice()
+                        : user.getdollarBalance() >= orderRecebida.getPrice()) {
 
-                while (userOrderRepository.findId(order.getId()).getVolume() > 0
-                        && userOrderRepository.findId(orderRecebida.getId()).getVolume() > 0) {
+                    orderRecebida.setVolume(orderRecebida.getVolume() - 1);
+                    order.setVolume(order.getVolume() - 1);
 
-                    order = userOrderRepository.findId(order.getId());
-                    user = userService.listar(order.getidUser());
+                    if (orderRecebida.getType() == 1) {
+                        orderUser.setdollarBalance(orderUser.getdollarBalance() - order.getPrice());
+                        user.setdollarBalance(user.getdollarBalance() + order.getPrice());
+                        atualiza(orderRecebida);
+                    } else {
+                        orderUser.setdollarBalance(orderUser.getdollarBalance() +
+                                orderRecebida.getPrice());
+                        user.setdollarBalance(user.getdollarBalance() - orderRecebida.getPrice());
+                        atualiza(order);
+                    }
 
-                    orderRecebida = userOrderRepository.findId(orderRecebida.getId());
-                    orderUser = userService.listar(orderRecebida.getidUser());
+                    if (order.getVolume() == 0) {
+                        order.setStatus(2);
+                    }
 
-                    if (orderRecebida.getType() == 1 ? orderUser.getdollarBalance() >= order.getPrice()
-                            : user.getdollarBalance() >= orderRecebida.getPrice()) {
+                    if (orderRecebida.getVolume() == 0) {
+                        orderRecebida.setStatus(2);
+                    }
 
-                        orderRecebida.setVolume(orderRecebida.getVolume() - 1);
-                        order.setVolume(order.getVolume() - 1);
-
-                        if (orderRecebida.getType() == 1) {
-                            orderUser.setdollarBalance(orderUser.getdollarBalance() - order.getPrice());
-                            user.setdollarBalance(user.getdollarBalance() + order.getPrice());
-                            atualiza(orderRecebida);
-                        } else {
-                            orderUser.setdollarBalance(orderUser.getdollarBalance() + orderRecebida.getPrice());
-                            user.setdollarBalance(user.getdollarBalance() - orderRecebida.getPrice());
-                            atualiza(order);
-                        }
-
-                        if (order.getVolume() == 0) {
-                            order.setStatus(2);
-                        }
-
-                        if (orderRecebida.getVolume() == 0) {
-                            orderRecebida.setStatus(2);
-                        }
-
+                    try {
                         userOrderRepository.save(order);
                         userOrderRepository.save(orderRecebida);
                         userService.save(user);
                         userService.save(orderUser);
-
-                    } else {
-                        break;
+                    } catch (OptimisticLockException ex) {
+                        return ResponseEntity.badRequest().body(ex);
                     }
 
+                } else {
+                    break;
                 }
+
             }
+
         }
         return ResponseEntity.ok().body(orderRecebida);
     }
@@ -175,7 +249,7 @@ public class UserOrderService implements IUserOrderService {
     @Override
     public List<UserOrders> listaOrdens(int id, long type, long idStock) {
 
-        return userOrderRepository.findByTypeAndStockNotId(id, type, idStock);
+        return userOrderRepository.findByTypeAndStockAndId(id, type, idStock);
     }
 
     @Override
@@ -187,16 +261,6 @@ public class UserOrderService implements IUserOrderService {
     @Override
     public List<UserOrders> findByUserId(int idUser) {
         return userOrderRepository.findByUser(idUser);
-    }
-
-    public boolean validaBalance(UserOrders userOrders) {
-
-        if (iUserStockBalanceService.finByUserAndStock(userOrders.getidUser(), userOrders.getidStock())
-                .getVolume() >= userOrders.getVolume()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     @Override

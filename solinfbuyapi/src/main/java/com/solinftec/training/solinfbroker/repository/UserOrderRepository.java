@@ -27,13 +27,16 @@ public interface UserOrderRepository extends JpaRepository<UserOrders, Long> {
     Double selectMaxPriceCompra(Long idStock);
 
     @Query(value = "SELECT * FROM user_orders uo WHERE uo.type = ?1 and id_stock = ?2 and status = 1 and id_user != ?3 order by case when uo.type = 2 then price end asc, case when uo.type = 2 then created_on end asc, case when uo.type = 1 then created_on end asc", nativeQuery = true)
-    List<UserOrders> findByTypeAndStockNotId(int type, long stock, long id);
+    List<UserOrders> findByTypeAndStockAndId(int type, long stock, long id);
 
     @Query(value = "SELECT * FROM user_orders WHERE id_user = ?1", nativeQuery = true)
     List<UserOrders> findByUser(int idUser);
 
     @Query(value = "SELECT * FROM user_orders WHERE type = ?1", nativeQuery = true)
-    List<UserOrders> findByType(int Type);
+    List<UserOrders> findByType(int type);
+
+    // (value = "SELECT * FROM Cooperativa WHERE type = ?1") FETCH //HYBERNATE QUERY
+    // LANGUAGE
 
     @Query(value = "SELECT * FROM user_orders WHERE id = ?1", nativeQuery = true)
     UserOrders findId(long id);

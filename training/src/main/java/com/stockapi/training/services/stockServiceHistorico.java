@@ -25,7 +25,6 @@ public class stockServiceHistorico implements istockservicehistorico {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("idStock", idStock);
-
         return namedParameterJdbcTemplate.queryForList(
                 "with data as ( "
                         + "    select ask_min, created_on, date_trunc('minute', created_on) minuto "

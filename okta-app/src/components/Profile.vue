@@ -312,6 +312,7 @@
         id="modal"
         v-show="showModal"
       >
+        <div class="loader">Loading...</div>
         <div role="alert" class="container mx-auto w-11/12 md:w-2/3 max-w-lg">
           <div
             class="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400"
@@ -367,7 +368,8 @@
             <div class="flex items-center justify-start w-full">
               <button
                 class="focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 rounded text-white px-8 py-2 text-sm"
-                @click="venderAcao()"
+                :disabled="isDisabled"
+                @click="[(this.isDisabled = true), venderAcao()]"
               >
                 Vender
               </button>
@@ -420,6 +422,7 @@ export default {
     acoesRecebidas: [],
     showModal: false,
     infosUser: [],
+    isDisabled: false,
     Orders: [],
     mensagemErro: "",
     ocultaMsg: false,
@@ -561,7 +564,7 @@ export default {
         let accessToken = this.$auth.getAccessToken();
 
         let response = await axios.get(
-          `http://localhost:8083/usuarios?email=${this.claims.email}`,
+          `http://172.17.0.1:8083/usuarios?email=${this.claims.email}`,
           { headers: { Authorization: "Bearer " + accessToken } }
         );
 
@@ -581,7 +584,7 @@ export default {
         let accessToken = this.$auth.getAccessToken();
         try {
           let response = await axios.get(
-            `http://localhost:8083/userorder?user=${this.infosUser.data.id}`,
+            `http://172.17.0.1:8083/userorder?user=${this.infosUser.data.id}`,
             { headers: { Authorization: "Bearer " + accessToken } }
           );
           for (var key in response.data) {
@@ -613,7 +616,7 @@ export default {
         // console.log(accessToken);
         try {
           let response = await axios.get(
-            `http://localhost:8083/stockbalances?email=${this.claims.email}`,
+            `http://172.17.0.1:8083/stockbalances?email=${this.claims.email}`,
             { headers: { Authorization: "Bearer " + accessToken } }
           );
           for (var key in response.data) {
@@ -712,7 +715,7 @@ export default {
           console.log(parseFloat(valor.value));
           try {
             let response = await axios.post(
-              `http://localhost:8083/userorder`,
+              `http://172.17.0.1:8083/userorder`,
               {
                 idUser: this.infosUser.data.id,
                 idStock: this.acoesRecebidas.id,
@@ -738,13 +741,16 @@ export default {
               setTimeout(this.ocultaMensagem, 3000);
               let modal = document.getElementById("modal");
               this.fadeOut(modal);
+              this.isDisabled = false;
             }
           } catch (error) {
+            this.isDisabled = false;
             console.log(error);
           }
         }
       } else {
         this.ocultaMsg = true;
+        this.isDisabled = false;
         this.alertMensagemErro(
           "Quantidade vendida não pode ser maior que a quantidade atual."
         );
@@ -766,3 +772,65 @@ export default {
   },
 };
 </script>
+
+<style>
+.loader,
+.loader:before,
+.loader:after {
+  background: #ffffff;
+  -webkit-animation: load1 1s infinite ease-in-out;
+  animation: load1 1s infinite ease-in-out;
+  width: 1em;
+  height: 4em;
+}
+.loader {
+  color: #ffffff;
+  text-indent: -9999em;
+  margin: 88px auto;
+  position: relative;
+  font-size: 11px;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+.loader:before,
+.loader:after {
+  position: absolute;
+  top: 0;
+  content: "";
+}
+.loader:before {
+  left: -1.5em;
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+.loader:after {
+  left: 1.5em;
+}
+@-webkit-keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
+@keyframes load1 {
+  0%,
+  80%,
+  100% {
+    box-shadow: 0 0;
+    height: 4em;
+  }
+  40% {
+    box-shadow: 0 -2em;
+    height: 5em;
+  }
+}
+</style>

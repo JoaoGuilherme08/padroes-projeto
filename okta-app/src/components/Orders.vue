@@ -433,7 +433,7 @@ export default {
         let accessToken = this.$auth.getAccessToken();
 
         let response = await axios.get(
-          `http://localhost:8083/usuarios?email=${this.claims.email}`,
+          `http://172.17.0.1:8083/usuarios?email=${this.claims.email}`,
           { headers: { Authorization: "Bearer " + accessToken } }
         );
 
@@ -461,7 +461,7 @@ export default {
 
         try {
           let response = await axios.post(
-            `http://localhost:8083/userorder`,
+            `http://172.17.0.1:8083/userorder`,
             {
               idUser: this.infosUser.data.id,
               idStock: this.acoesRecebidas.id,
@@ -526,7 +526,7 @@ export default {
         this.claims = await this.$auth.getUser();
         let accessToken = this.$auth.getAccessToken();
         try {
-          let response = await axios.get(`http://localhost:8084/stock`, {
+          let response = await axios.get(`http://172.17.0.1:8084/stock`, {
             headers: { Authorization: "Bearer " + accessToken },
           });
           for (var key in response.data) {
@@ -571,7 +571,7 @@ export default {
         let accessToken = this.$auth.getAccessToken();
         try {
           let response = await axios.get(
-            `http://localhost:8084/stockhistorico/${id}`,
+            `http://172.17.0.1:8084/stockhistorico/${id}`,
             {
               headers: { Authorization: "Bearer " + accessToken },
             }

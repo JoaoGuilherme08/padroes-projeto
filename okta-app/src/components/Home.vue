@@ -151,7 +151,7 @@ export default {
         console.log(accessToken);
         try {
           let response = await axios.get(
-            `http://localhost:8083/usuarios?email=${this.claims.email}`,
+            `http://172.17.0.1:8083/usuarios?email=${this.claims.email}`,
             { headers: { Authorization: "Bearer " + accessToken } }
           );
 

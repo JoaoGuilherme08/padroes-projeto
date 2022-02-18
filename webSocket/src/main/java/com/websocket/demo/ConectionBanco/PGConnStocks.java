@@ -12,7 +12,7 @@ public class PGConnStocks {
         try {
             if (conn == null) {
 
-                String url = "jdbc:postgresql://localhost:5432/stockbanc?user=postgres&password=solinftec&ssl=false";
+                String url = "jdbc:postgresql://172.17.0.1:5432/stockbanc?user=postgres&password=solinftec&ssl=false";
                 conn = DriverManager.getConnection(url);
             }
         } catch (SQLException ex) {

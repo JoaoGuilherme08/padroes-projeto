@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.persistence.OptimisticLockException;
 
-import com.nimbusds.oauth2.sdk.Response;
 import com.solinftec.training.solinfbroker.bean.compra;
 import com.solinftec.training.solinfbroker.bean.venda;
 import com.solinftec.training.solinfbroker.model.UserOrders;

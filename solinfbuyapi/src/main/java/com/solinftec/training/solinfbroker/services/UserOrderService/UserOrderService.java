@@ -58,10 +58,10 @@ public class UserOrderService implements IUserOrderService {
         if (userOrders.getType() == 2 && validaBalance(userOrders)) {
             userOrderRepository.save(userOrders);
             atualiza(userOrders);
-            remove(userOrders);
+            atualizaOrders(userOrders);
         } else if (userOrders.getType() == 1) {
             userOrderRepository.save(userOrders);
-            remove(userOrders);
+            atualizaOrders(userOrders);
         }
 
         atualizaApiStocks(userOrders, userToken);
@@ -193,7 +193,7 @@ public class UserOrderService implements IUserOrderService {
      * // }
      */
 
-    private ResponseEntity<?> remove(UserOrders orderRecebida) {
+    private ResponseEntity<?> atualizaOrders(UserOrders orderRecebida) {
 
         for (UserOrders order : buscaListaorder.shareInverseOrder(orderRecebida)) {
             while (userOrderRepository.findId(order.getId()).getVolume() > 0
@@ -239,9 +239,7 @@ public class UserOrderService implements IUserOrderService {
                 } else {
                     break;
                 }
-
             }
-
         }
         return ResponseEntity.ok().body(orderRecebida);
     }

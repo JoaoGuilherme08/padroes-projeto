@@ -312,7 +312,6 @@
         id="modal"
         v-show="showModal"
       >
-        <div class="loader">Loading...</div>
         <div role="alert" class="container mx-auto w-11/12 md:w-2/3 max-w-lg">
           <div
             class="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400"
@@ -337,49 +336,57 @@
                 <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
               </svg>
             </div>
-            <h1
-              class="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4"
-            >
-              Por quanto deseja vender esta ação?
-            </h1>
-            <label
-              for="quantidade"
-              class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
-              >Quantidade</label
-            >
-            <input
-              id="quantidade"
-              class="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-              @click="tirarQuantidade()"
-              placeholder="Digite a Quantidade"
-            />
-            <label
-              for="valor"
-              class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
-              >Valor</label
-            >
-            <input
-              id="valor"
-              class="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-              @keyup="formatarMoeda()"
-              @click="tirarValor()"
-              placeholder="Digite o Valor"
-            />
-            <div class="flex items-center justify-start w-full">
-              <button
-                class="focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 rounded text-white px-8 py-2 text-sm"
-                :disabled="isDisabled"
-                @click="[(this.isDisabled = true), venderAcao()]"
+            <div class="parent">
+              <vue-element-loading
+                :active="show"
+                spinner="bar-fade-scale"
+                color="#4643FF"
+                text="Aguarde..."
+              />
+              <h1
+                class="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4"
               >
-                Vender
-              </button>
-              <button
-                class="focus:outline-none ml-3 bg-gray-100 transition duration-150 text-gray-600 ease-in-out hover:border-gray-400 hover:bg-gray-300 border rounded px-8 py-2 text-sm"
-                @click="modalHandler(false)"
+                Por quanto deseja vender esta ação?
+              </h1>
+              <label
+                for="quantidade"
+                class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                >Quantidade</label
               >
-                Cancelar
-              </button>
+              <input
+                id="quantidade"
+                class="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
+                @click="tirarQuantidade()"
+                placeholder="Digite a Quantidade"
+              />
+              <label
+                for="valor"
+                class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+                >Valor</label
+              >
+              <input
+                id="valor"
+                class="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
+                @keyup="formatarMoeda()"
+                @click="tirarValor()"
+                placeholder="Digite o Valor"
+              />
+              <div class="flex items-center justify-start w-full">
+                <button
+                  class="focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 rounded text-white px-8 py-2 text-sm"
+                  @click="[(this.show = true), venderAcao()]"
+                >
+                  Vender
+                </button>
+                <button
+                  class="focus:outline-none ml-3 bg-gray-100 transition duration-150 text-gray-600 ease-in-out hover:border-gray-400 hover:bg-gray-300 border rounded px-8 py-2 text-sm"
+                  @click="modalHandler(false)"
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
+
             <div
               class="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out"
               @click="modalHandler()"
@@ -413,8 +420,12 @@
 import axios from "axios";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import VueElementLoading from "vue-element-loading";
 
 export default {
+  components: {
+    VueElementLoading,
+  },
   data: () => ({
     people: [],
     acoes: [],
@@ -422,6 +433,7 @@ export default {
     acoesRecebidas: [],
     showModal: false,
     infosUser: [],
+    show: false,
     isDisabled: false,
     Orders: [],
     mensagemErro: "",
@@ -703,10 +715,12 @@ export default {
       if (quantidade.value == 0 || quantidade.value == "") {
         this.ocultaMsg = true;
         this.alertMensagemErro("Quantidade não pode ser igual a 0");
+        this.show = false;
         setTimeout(this.ocultaMensagem, 3000);
       } else if (valor.value == "0,00" || valor.value == "") {
         this.ocultaMsg = true;
         this.alertMensagemErro("Valor não pode ser igual a 0");
+        this.show = false;
         setTimeout(this.ocultaMensagem, 3000);
       } else if (quantidade.value <= this.acoesRecebidas.volume) {
         if (this.$root.authenticated) {
@@ -741,16 +755,16 @@ export default {
               setTimeout(this.ocultaMensagem, 3000);
               let modal = document.getElementById("modal");
               this.fadeOut(modal);
-              this.isDisabled = false;
+              this.show = false;
             }
           } catch (error) {
-            this.isDisabled = false;
+            this.show = false;
             console.log(error);
           }
         }
       } else {
         this.ocultaMsg = true;
-        this.isDisabled = false;
+        this.show = false;
         this.alertMensagemErro(
           "Quantidade vendida não pode ser maior que a quantidade atual."
         );
@@ -772,65 +786,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.loader,
-.loader:before,
-.loader:after {
-  background: #ffffff;
-  -webkit-animation: load1 1s infinite ease-in-out;
-  animation: load1 1s infinite ease-in-out;
-  width: 1em;
-  height: 4em;
-}
-.loader {
-  color: #ffffff;
-  text-indent: -9999em;
-  margin: 88px auto;
-  position: relative;
-  font-size: 11px;
-  -webkit-transform: translateZ(0);
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  -webkit-animation-delay: -0.16s;
-  animation-delay: -0.16s;
-}
-.loader:before,
-.loader:after {
-  position: absolute;
-  top: 0;
-  content: "";
-}
-.loader:before {
-  left: -1.5em;
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
-}
-.loader:after {
-  left: 1.5em;
-}
-@-webkit-keyframes load1 {
-  0%,
-  80%,
-  100% {
-    box-shadow: 0 0;
-    height: 4em;
-  }
-  40% {
-    box-shadow: 0 -2em;
-    height: 5em;
-  }
-}
-@keyframes load1 {
-  0%,
-  80%,
-  100% {
-    box-shadow: 0 0;
-    height: 4em;
-  }
-  40% {
-    box-shadow: 0 -2em;
-    height: 5em;
-  }
-}
-</style>

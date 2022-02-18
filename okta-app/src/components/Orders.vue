@@ -183,48 +183,57 @@
               <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
             </svg>
           </div>
-          <h1
-            class="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4"
-          >
-            Por quanto deseja comprar esta ação?
-          </h1>
-          <label
-            for="quantidade"
-            class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
-            >Quantidade</label
-          >
-          <input
-            id="quantidade"
-            class="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-            @click="tirarQuantidade()"
-            placeholder="Digite a Quantidade"
-          />
-          <label
-            for="valor"
-            class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
-            >Valor</label
-          >
-          <input
-            id="valor"
-            class="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
-            @keyup="formatarMoeda()"
-            @click="tirarValor()"
-            placeholder="Digite o Valor"
-          />
-          <div class="flex items-center justify-start w-full">
-            <button
-              class="focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 rounded text-white px-8 py-2 text-sm"
-              @click="comprarAcao()"
+          <div class="parent">
+            <vue-element-loading
+              :active="show"
+              spinner="bar-fade-scale"
+              color="#4643FF"
+              text="Aguarde..."
+            />
+            <h1
+              class="text-gray-800 font-lg font-bold tracking-normal leading-tight mb-4"
             >
-              Comprar
-            </button>
-            <button
-              class="focus:outline-none ml-3 bg-gray-100 transition duration-150 text-gray-600 ease-in-out hover:border-gray-400 hover:bg-gray-300 border rounded px-8 py-2 text-sm"
-              @click="modalHandler(false)"
+              Por quanto deseja comprar esta ação?
+            </h1>
+            <label
+              for="quantidade"
+              class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+              >Quantidade</label
             >
-              Cancelar
-            </button>
+            <input
+              id="quantidade"
+              class="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
+              @click="tirarQuantidade()"
+              placeholder="Digite a Quantidade"
+            />
+            <label
+              for="valor"
+              class="text-gray-800 text-sm font-bold leading-tight tracking-normal"
+              >Valor</label
+            >
+            <input
+              id="valor"
+              class="mb-5 mt-2 text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-10 flex items-center pl-3 text-sm border-gray-300 rounded border"
+              @keyup="formatarMoeda()"
+              @click="tirarValor()"
+              placeholder="Digite o Valor"
+            />
+            <div class="flex items-center justify-start w-full">
+              <button
+                class="focus:outline-none transition duration-150 ease-in-out hover:bg-indigo-600 bg-indigo-700 rounded text-white px-8 py-2 text-sm"
+                @click="[(this.show = true), comprarAcao()]"
+              >
+                Comprar
+              </button>
+              <button
+                class="focus:outline-none ml-3 bg-gray-100 transition duration-150 text-gray-600 ease-in-out hover:border-gray-400 hover:bg-gray-300 border rounded px-8 py-2 text-sm"
+                @click="modalHandler(false)"
+              >
+                Cancelar
+              </button>
+            </div>
           </div>
+
           <div
             class="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out"
             @click="modalHandler()"
@@ -302,8 +311,12 @@
 import axios from "axios";
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import VueElementLoading from "vue-element-loading";
 
 export default {
+  components: {
+    VueElementLoading,
+  },
   data: () => ({
     acoes: [],
     mensagemErro: "",
@@ -312,6 +325,7 @@ export default {
     mensagemOk: "",
     ocultaMsgOk: false,
     showModal: false,
+    show: false,
     infosUser: [],
     received_messages: [],
     send_message: null,
@@ -446,15 +460,15 @@ export default {
 
       if (quantidade.value == 0 || quantidade.value == "") {
         this.ocultaMsg = true;
+        this.show = false;
         this.alertMensagemErro("Quantidade não pode ser igual a 0");
         setTimeout(this.ocultaMensagem, 3000);
       } else if (valor.value == "0,00" || valor.value == "") {
         this.ocultaMsg = true;
+        this.show = false;
         this.alertMensagemErro("Valor não pode ser igual a 0");
         setTimeout(this.ocultaMensagem, 3000);
-      }
-
-      if (this.$root.authenticated) {
+      } else if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();
         let accessToken = this.$auth.getAccessToken();
         console.log(this.acoesRecebidas);
@@ -487,8 +501,10 @@ export default {
             setTimeout(this.ocultaMensagem, 3000);
             let modal = document.getElementById("modal");
             this.fadeOut(modal);
+            this.show = false;
           }
         } catch (error) {
+          this.show = false;
           console.log(error);
         }
       }

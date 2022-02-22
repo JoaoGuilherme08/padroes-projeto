@@ -31,9 +31,9 @@ import net.minidev.json.JSONObject;
 @Service
 public class UserOrderService implements IUserOrderService {
 
-    Users user;
-
     Users orderUser;
+
+    Users orderRecebidaUser;
 
     public UserOrderService(IUserService userService, UserOrderRepository userOrderRepository,
             iUserStockBalanceService iUserStockBalanceService, BuscaListaorder buscaListaorder) {
@@ -147,9 +147,9 @@ public class UserOrderService implements IUserOrderService {
      * // user = userService.listar(order.getidUser());
      * 
      * // orderRecebida = userOrderRepository.findId(orderRecebida.getId());
-     * // orderUser = userService.listar(orderRecebida.getidUser());
+     * // orderRecebidaUser = userService.listar(orderRecebida.getidUser());
      * 
-     * // if (orderRecebida.getType() == 1 ? orderUser.getdollarBalance() >=
+     * // if (orderRecebida.getType() == 1 ? orderRecebidaUser.getdollarBalance() >=
      * // order.getPrice()
      * // : user.getdollarBalance() >= orderRecebida.getPrice()) {
      * 
@@ -157,12 +157,12 @@ public class UserOrderService implements IUserOrderService {
      * // order.setVolume(order.getVolume() - 1);
      * 
      * // if (orderRecebida.getType() == 1) {
-     * // orderUser.setdollarBalance(orderUser.getdollarBalance() -
+     * // orderRecebidaUser.setdollarBalance(orderRecebidaUser.getdollarBalance() -
      * order.getPrice());
      * // user.setdollarBalance(user.getdollarBalance() + order.getPrice());
      * // atualiza(orderRecebida);
      * // } else {
-     * // orderUser.setdollarBalance(orderUser.getdollarBalance() +
+     * // orderRecebidaUser.setdollarBalance(orderRecebidaUser.getdollarBalance() +
      * // orderRecebida.getPrice());
      * // user.setdollarBalance(user.getdollarBalance() - orderRecebida.getPrice());
      * // atualiza(order);
@@ -179,7 +179,7 @@ public class UserOrderService implements IUserOrderService {
      * // userOrderRepository.save(order);
      * // userOrderRepository.save(orderRecebida);
      * // userService.save(user);
-     * // userService.save(orderUser);
+     * // userService.save(orderRecebidaUser);
      * 
      * // } else {
      * // break;
@@ -198,23 +198,23 @@ public class UserOrderService implements IUserOrderService {
             while (userOrderRepository.findId(order.getId()).getVolume() > 0
                     && userOrderRepository.findId(orderRecebida.getId()).getVolume() > 0) {
 
-                user = userService.listar(order.getidUser());
-                orderUser = userService.listar(orderRecebida.getidUser());
+                orderUser = userService.listar(order.getidUser());
+                orderRecebidaUser = userService.listar(orderRecebida.getidUser());
 
-                if (orderRecebida.getType() == 1 ? orderUser.getdollarBalance() >= order.getPrice()
-                        : user.getdollarBalance() >= orderRecebida.getPrice()) {
+                if (orderRecebida.getType() == 1 ? orderRecebidaUser.getdollarBalance() >= order.getPrice()
+                        : orderUser.getdollarBalance() >= orderRecebida.getPrice()) {
 
                     orderRecebida.setVolume(orderRecebida.getVolume() - 1);
                     order.setVolume(order.getVolume() - 1);
 
                     if (orderRecebida.getType() == 1) {
-                        orderUser.setdollarBalance(orderUser.getdollarBalance() - order.getPrice());
-                        user.setdollarBalance(user.getdollarBalance() + order.getPrice());
+                        orderRecebidaUser.setdollarBalance(orderRecebidaUser.getdollarBalance() - order.getPrice());
+                        orderUser.setdollarBalance(orderUser.getdollarBalance() + order.getPrice());
                         atualiza(orderRecebida);
                     } else {
-                        orderUser.setdollarBalance(orderUser.getdollarBalance() +
+                        orderRecebidaUser.setdollarBalance(orderRecebidaUser.getdollarBalance() +
                                 orderRecebida.getPrice());
-                        user.setdollarBalance(user.getdollarBalance() - orderRecebida.getPrice());
+                        orderUser.setdollarBalance(orderUser.getdollarBalance() - orderRecebida.getPrice());
                         atualiza(order);
                     }
 
@@ -229,8 +229,8 @@ public class UserOrderService implements IUserOrderService {
                     try {
                         userOrderRepository.save(order);
                         userOrderRepository.save(orderRecebida);
-                        userService.save(user);
                         userService.save(orderUser);
+                        userService.save(orderRecebidaUser);
                     } catch (OptimisticLockException ex) {
                         return ResponseEntity.badRequest().body(ex);
                     }

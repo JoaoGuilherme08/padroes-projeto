@@ -597,8 +597,11 @@ export default {
             var array = new Array();
 
             for (var key in response.data) {
+              var date = new Date(response.data[key].minuto);
+              date.setHours(date.getHours() - 3);
+
               var array1 = new Array(
-                new Date(response.data[key].minuto),
+                date,
                 response.data[key].abertura,
                 response.data[key].maximo,
                 response.data[key].minimo,
@@ -606,6 +609,8 @@ export default {
               );
               array.push(array1);
             }
+
+            console.log(array1);
 
             data.data = array;
             this.series.push(data);

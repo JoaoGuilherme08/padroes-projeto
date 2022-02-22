@@ -1,5 +1,5 @@
 <template>
-  <nav>
+  <div>
     <div
       class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative"
       style="width: 534px; margin-left: auto; margin-right: 10px; top: 20px"
@@ -35,7 +35,7 @@
         {{ mensagemOk }}
       </div>
     </div>
-    <nav>
+    <div>
       <div
         class="flex flex-col"
         style="
@@ -412,8 +412,8 @@
           </div>
         </div>
       </div>
-    </nav>
-  </nav>
+    </div>
+  </div>
 </template>
 
 <script>

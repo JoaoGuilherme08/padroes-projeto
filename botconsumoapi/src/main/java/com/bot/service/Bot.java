@@ -28,14 +28,14 @@ public class Bot {
             DecimalFormat df = new DecimalFormat("#.##");
 
             JSONObject json = new JSONObject();
-            int id_user = new Random().nextInt(10) + 1;
-            int id_stock = new Random().nextInt(10) + 1;
+            int idUser = new Random().nextInt(10) + 1;
+            int idStock = new Random().nextInt(10) + 1;
             int volume = new Random().nextInt(50) + 1;
             Double price = Double.parseDouble(df.format(Math.random() * 100).replace(",",
                     "."));
             int type = (Math.random() <= 0.5) ? 1 : 2;
-            String stock_name = "";
-            String stock_symbol = "";
+            String stockName = "";
+            String stockSymbol = "";
 
             try {
 
@@ -51,18 +51,18 @@ public class Bot {
                     if (nNode.getNodeType() == Node.ELEMENT_NODE) {
                         Element eElement = (Element) nNode;
 
-                        if (id_stock == Integer
+                        if (idStock == Integer
                                 .parseInt(eElement.getElementsByTagName("id").item(0).getTextContent())) {
-                            stock_name = eElement.getElementsByTagName("name").item(0).getTextContent();
-                            stock_symbol = eElement.getElementsByTagName("simbol").item(0).getTextContent();
+                            stockName = eElement.getElementsByTagName("name").item(0).getTextContent();
+                            stockSymbol = eElement.getElementsByTagName("simbol").item(0).getTextContent();
 
-                            json.put("idUser", id_user);
-                            json.put("idStock", id_stock);
+                            json.put("idUser", idUser);
+                            json.put("idStock", idStock);
                             json.put("volume", volume);
                             json.put("price", price);
                             json.put("type", 2);
-                            json.put("stockName", stock_name);
-                            json.put("stockSymbol", stock_symbol);
+                            json.put("stockName", stockName);
+                            json.put("stockSymbol", stockSymbol);
                             json.put("status", 1);
 
                             // System.out.print(json);

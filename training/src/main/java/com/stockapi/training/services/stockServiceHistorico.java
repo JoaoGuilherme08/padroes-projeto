@@ -25,7 +25,8 @@ public class stockServiceHistorico implements istockservicehistorico {
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("idStock", idStock);
-        return namedParameterJdbcTemplate.queryForList(
+
+        List<Map<String, Object>> retorno = namedParameterJdbcTemplate.queryForList(
                 "with data as ( "
                         + "    select ask_min, created_on, date_trunc('minute', created_on) minuto "
                         + "    from historystock h2 "
@@ -43,5 +44,6 @@ public class stockServiceHistorico implements istockservicehistorico {
                         + ")select f.abertura, f.fechamento, m.minimo, m.maximo, m.minuto "
                         + "	from first_last f join min_max m on f.minuto = m.minuto",
                 parameters);
+        return retorno;
     }
 }

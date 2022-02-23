@@ -1,4 +1,4 @@
-package com.solinftec.training.solinfbroker.services.UserService;
+package com.solinftec.training.solinfbroker.services.userservice;
 
 import com.solinftec.training.solinfbroker.model.Users;
 import org.springframework.http.ResponseEntity;

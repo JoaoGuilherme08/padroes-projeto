@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class stockService implements istockservice {
+public class stockService implements Istockservice {
 
     public stockService(StockRepository stockRepository) {
         super();

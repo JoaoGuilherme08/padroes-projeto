@@ -1,4 +1,4 @@
-package com.solinftec.training.solinfbroker.services.UserOrderBalance;
+package com.solinftec.training.solinfbroker.services.userOrderBalance;
 
 import java.util.List;
 

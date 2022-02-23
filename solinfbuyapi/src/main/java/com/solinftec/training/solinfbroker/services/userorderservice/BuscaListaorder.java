@@ -1,4 +1,4 @@
-package com.solinftec.training.solinfbroker.services.UserOrderService;
+package com.solinftec.training.solinfbroker.services.userOrderService;
 
 import java.util.HashMap;
 import java.util.List;

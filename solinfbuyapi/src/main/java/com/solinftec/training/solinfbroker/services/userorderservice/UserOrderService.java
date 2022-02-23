@@ -1,20 +1,18 @@
-package com.solinftec.training.solinfbroker.services.UserOrderService;
+package com.solinftec.training.solinfbroker.services.userorderservice;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.OptimisticLockException;
-
-import com.solinftec.training.solinfbroker.bean.compra;
-import com.solinftec.training.solinfbroker.bean.venda;
 import com.solinftec.training.solinfbroker.model.UserOrders;
 import com.solinftec.training.solinfbroker.model.UserStockBalances;
 import com.solinftec.training.solinfbroker.model.Users;
 import com.solinftec.training.solinfbroker.repository.UserOrderRepository;
-import com.solinftec.training.solinfbroker.services.UserOrderBalance.iUserStockBalanceService;
-import com.solinftec.training.solinfbroker.services.UserService.IUserService;
-
+import com.solinftec.training.solinfbroker.services.bean.Compra;
+import com.solinftec.training.solinfbroker.services.bean.Venda;
+import com.solinftec.training.solinfbroker.services.userorderbalance.IUserStockBalanceService;
+import com.solinftec.training.solinfbroker.services.userservice.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,28 +23,25 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
-
 import net.minidev.json.JSONObject;
 
 @Service
 public class UserOrderService implements IUserOrderService {
 
     Users orderUser;
-
     Users orderRecebidaUser;
+    IUserService userService;
+    IUserStockBalanceService iUserStockBalanceService;
+    BuscaListaorder buscaListaorder;
 
     public UserOrderService(IUserService userService, UserOrderRepository userOrderRepository,
-            iUserStockBalanceService iUserStockBalanceService, BuscaListaorder buscaListaorder) {
+            IUserStockBalanceService iUserStockBalanceService, BuscaListaorder buscaListaorder) {
         super();
         this.userService = userService;
         this.userOrderRepository = userOrderRepository;
         this.iUserStockBalanceService = iUserStockBalanceService;
         this.buscaListaorder = buscaListaorder;
     }
-
-    IUserService userService;
-    iUserStockBalanceService iUserStockBalanceService;
-    BuscaListaorder buscaListaorder;
 
     @Autowired
     private UserOrderRepository userOrderRepository;
@@ -69,8 +64,8 @@ public class UserOrderService implements IUserOrderService {
     }
 
     private ResponseEntity<?> atualizaApiStocks(UserOrders userOrders, String token) {
-        var venda = new venda();
-        var compra = new compra();
+        var venda = new Venda();
+        var compra = new Compra();
 
         RestTemplate template = new RestTemplate();
 

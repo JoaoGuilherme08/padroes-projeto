@@ -60,7 +60,7 @@ public class Bot {
                             json.put("idStock", idStock);
                             json.put("volume", volume);
                             json.put("price", price);
-                            json.put("type", 2);
+                            json.put("type", type);
                             json.put("stockName", stockName);
                             json.put("stockSymbol", stockSymbol);
                             json.put("status", 1);

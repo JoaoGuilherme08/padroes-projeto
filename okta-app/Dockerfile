@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY package*.json ./
 COPY src ./src/
+COPY images ./images/
 COPY babel.config.js ./
 COPY tailwind.config.js ./
 COPY postcss.config.js ./

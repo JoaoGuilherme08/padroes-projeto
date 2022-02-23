@@ -2,7 +2,7 @@ package com.stockapi.training.controller;
 
 import java.util.List;
 import com.stockapi.training.model.Stock;
-import com.stockapi.training.services.istockservice;
+import com.stockapi.training.services.Istockservice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,15 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/stock")
 public class StockController {
 
-    istockservice istockservice;
+    Istockservice istockservice;
 
-    public StockController(com.stockapi.training.services.istockservice istockservice) {
+    public StockController(com.stockapi.training.services.Istockservice istockservice) {
         super();
         this.istockservice = istockservice;
     }
 
     @GetMapping
-    public List<Stock> Listar() {
+    public List<Stock> listar() {
         return istockservice.listar();
     }
 

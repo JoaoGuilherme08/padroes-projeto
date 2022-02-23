@@ -6,8 +6,8 @@ import com.stockapi.training.model.Stock;
 
 import org.springframework.http.ResponseEntity;
 
-public interface istockservice {
-    ResponseEntity<?> salvarAcao(Stock stock, long Id);
+public interface Istockservice {
+    ResponseEntity<?> salvarAcao(Stock stock, long id);
 
     List<Stock> listar();
 

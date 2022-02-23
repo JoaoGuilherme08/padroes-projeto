@@ -711,7 +711,6 @@ export default {
       let valor = document.getElementById("valor");
       let quantidade = document.getElementById("quantidade");
 
-      console.log(valor.value);
       if (quantidade.value == 0 || quantidade.value == "") {
         this.ocultaMsg = true;
         this.alertMensagemErro("Quantidade não pode ser igual a 0");
@@ -726,7 +725,6 @@ export default {
         if (this.$root.authenticated) {
           this.claims = await this.$auth.getUser();
           let accessToken = this.$auth.getAccessToken();
-          console.log(parseFloat(valor.value));
           try {
             let response = await axios.post(
               `http://172.17.0.1:8083/userorder`,
@@ -746,7 +744,6 @@ export default {
                 },
               }
             );
-            console.log(response);
             if (response.status == 200) {
               this.ocultaMsgOk = true;
               this.alertMensagemOk(

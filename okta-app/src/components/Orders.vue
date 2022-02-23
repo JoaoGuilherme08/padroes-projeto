@@ -471,7 +471,6 @@ export default {
       } else if (this.$root.authenticated) {
         this.claims = await this.$auth.getUser();
         let accessToken = this.$auth.getAccessToken();
-        console.log(this.acoesRecebidas);
 
         try {
           let response = await axios.post(
@@ -492,7 +491,6 @@ export default {
               },
             }
           );
-          console.log(response);
           if (response.status == 200) {
             this.ocultaMsgOk = true;
             this.alertMensagemOk(
@@ -610,11 +608,8 @@ export default {
               array.push(array1);
             }
 
-            console.log(array1);
-
             data.data = array;
             this.series.push(data);
-            console.log(this.series);
           }
         } catch (error) {
           this.acoes = `${error}`;
